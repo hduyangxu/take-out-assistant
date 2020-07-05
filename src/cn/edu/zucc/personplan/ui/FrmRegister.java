@@ -13,25 +13,25 @@ import cn.edu.zucc.personplan.util.BaseException;
 public class FrmRegister extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
-	private Button btnOk = new Button("×¢²á");
-	private Button btnCancel = new Button("È¡Ïû");
-	private JLabel labelUser = new JLabel("ÓÃ»§£º");
-	private JLabel labelPwd = new JLabel("ÃÜÂë£º");
-	private JLabel labelPwd2 = new JLabel("ÃÜÂë£º");
-	private JLabel labelSex = new JLabel("ĞÔ±ğ:  ");
-	private JLabel labelSpace = new JLabel("£¨ÒÔÏÂÑ¡Ìî£©");
-	private JLabel labelTelNumber = new JLabel("ÊÖ»ú£º");
-	private JLabel labelEmail = new JLabel("ÓÊÏä£º");
-	private JLabel labelCity = new JLabel("³ÇÊĞ£º");
+	private JButton btnOk = new JButton("æ³¨å†Œ");
+	private JButton btnCancel = new JButton("å–æ¶ˆ");
+	private JLabel labelUser = new JLabel("ç”¨æˆ·ï¼š");
+	private JLabel labelPwd = new JLabel("å¯†ç ï¼š");
+	private JLabel labelPwd2 = new JLabel("å¯†ç ï¼š");
+	private JLabel labelSex = new JLabel("æ€§åˆ«ï¼š");
+	private JLabel labelSpace = new JLabel("ï¼ˆä»¥ä¸‹ä¸ºé€‰å¡«ï¼‰");
+	private JLabel labelTelNumber = new JLabel("æ‰‹æœºï¼š");
+	private JLabel labelEmail = new JLabel("é‚®ç®±ï¼š");
+	private JLabel labelCity = new JLabel("åŸå¸‚ï¼š");
 	private JTextField edtCity = new JTextField(20);
 	private JTextField edtEmail= new JTextField(20);
 	private JTextField edtUserName = new JTextField(20);
 	private JTextField edtTelNumber = new JTextField(20);
 	private JPasswordField edtPwd = new JPasswordField(20);
 	private JPasswordField edtPwd2 = new JPasswordField(20);
-	private JRadioButton man = new JRadioButton("ÄĞ");
-	private JRadioButton woman = new JRadioButton("Å®");
-	private JRadioButton secret = new JRadioButton("±£ÃÜ");
+	private JRadioButton man = new JRadioButton("ç”·");
+	private JRadioButton woman = new JRadioButton("å¥³");
+	private JRadioButton secret = new JRadioButton("ä¿å¯†");
 	private ButtonGroup sex = new ButtonGroup();
 	public FrmRegister(Dialog f, String s, boolean b) {
 		super(f, s, b);
@@ -40,8 +40,8 @@ public class FrmRegister extends JDialog implements ActionListener {
 		sex.add(secret);
 		secret.setSelected(true);
 		toolBar.add(this.btnOk);
-		btnOk.setBackground(Color.cyan);
-		btnCancel.setBackground(Color.cyan);
+//		btnOk.setBackground(Color.cyan);
+//		btnCancel.setBackground(Color.cyan);
 		toolBar.add(btnCancel);
 		toolBar.setLayout(new GridLayout(1,2,5,0));
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
@@ -64,7 +64,7 @@ public class FrmRegister extends JDialog implements ActionListener {
 		workPane.add(labelCity);
 		workPane.add(edtCity);
 		this.getContentPane().add(workPane, BorderLayout.CENTER);
-		this.setSize(300, 260);
+		this.setSize(300, 280);
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		this.setLocation((int) (width - this.getWidth()) / 2,
@@ -94,10 +94,10 @@ public class FrmRegister extends JDialog implements ActionListener {
 			try {
 				BeanUser user=PersonPlanUtil.userManager.reg(userName, userSex, userPassword, userPassword2, userTelNumber,
 						userEmail,userCity);
-				JOptionPane.showMessageDialog(null, "×¢²á³É¹¦", "³É¹¦",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "æ³¨å†ŒæˆåŠŸ", "æˆåŠŸ",JOptionPane.INFORMATION_MESSAGE);
 				this.setVisible(false);
 			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(),"´íÎó",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, e1.getMessage(),"é”™è¯¯",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			

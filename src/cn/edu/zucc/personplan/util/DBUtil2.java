@@ -19,7 +19,7 @@ public class DBUtil2 {
             dataSource = new ComboPooledDataSource();
             dataSource.setUser("root");
             dataSource.setPassword("86948122xuyang");
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/dxq?useSSL=false");
+            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/dxq?useSSL=false&useUnicode=true&characterEncoding=utf8");
             dataSource.setDriverClass("com.mysql.jdbc.Driver");
             dataSource.setInitialPoolSize(2);
             dataSource.setMinPoolSize(1);
@@ -39,7 +39,7 @@ public class DBUtil2 {
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
-            throw new RuntimeException("Á¬½ÓÊ§°Ü ", e);
+            throw new RuntimeException("è¿žæŽ¥å¤±è´¥", e);
         }
     }
 }

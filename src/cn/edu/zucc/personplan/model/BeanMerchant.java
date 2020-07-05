@@ -1,9 +1,19 @@
 package cn.edu.zucc.personplan.model;
 
 public class BeanMerchant {
+    public static final String[] tableTitles={"商家编号","商家名","星级","平均消费","总销量"};
     private int merchant_id;
     private String merchant_name;
     private int merchant_starRated;
+
+    public String getCell(int col){
+            if(col==0) return String.valueOf(this.merchant_id);
+            else if(col==1) return this.merchant_name;
+            else if(col==2) return String.valueOf(this.merchant_starRated);
+            else if(col==3) return String.valueOf(this.merchant_avgConsumption);
+            else if(col==4) return String.valueOf(this.merchant_totalSales);
+            else return "";
+    }
 
     public int getMerchant_id() {
         return merchant_id;

@@ -23,38 +23,28 @@ import javax.swing.table.DefaultTableModel;
 
 
 public class FrmMain extends JFrame implements ActionListener {
+	public static int userType = 0;
 	private static final long serialVersionUID = 1L;
-	private JMenuBar menubar=new JMenuBar(); ;
-    private JMenu menu_plan=new JMenu("¼Æ»®¹ÜÀí");
-    private JMenu menu_step=new JMenu("²½Öè¹ÜÀí");
-    private JMenu menu_static=new JMenu("²éÑ¯Í³¼Æ");
-    private JMenu menu_more=new JMenu("¸ü¶à");
-
-    private JMenuItem  menuItem_AddPlan=new JMenuItem("ĞÂ½¨¼Æ»®");
-    private JMenuItem  menuItem_DeletePlan=new JMenuItem("É¾³ı¼Æ»®");
-    private JMenuItem  menuItem_AddStep=new JMenuItem("Ìí¼Ó²½Öè");
-    private JMenuItem  menuItem_DeleteStep=new JMenuItem("É¾³ı²½Öè");
-    private JMenuItem  menuItem_startStep=new JMenuItem("¿ªÊ¼²½Öè");
-    private JMenuItem  menuItem_finishStep=new JMenuItem("½áÊø²½Öè");
-    private JMenuItem  menuItem_moveUpStep=new JMenuItem("²½ÖèÉÏÒÆ");
-    private JMenuItem  menuItem_moveDownStep=new JMenuItem("²½ÖèÏÂÒÆ");
-
-    private JMenuItem  menuItem_modifyPwd=new JMenuItem("ÃÜÂëĞŞ¸Ä");
-
-    private JMenuItem  menuItem_static1=new JMenuItem("Í³¼Æ1");
 
 
-	private FrmLogin dlgLogin=null;
-	private JPanel statusBar = new JPanel();
+	public FrmLogin dlgLogin=null;
+
+
 
 
 	public FrmMain(){
 		
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
-		this.setTitle("±¥ÁËÃ´ÍâÂôÆ½Ì¨");
-		dlgLogin=new FrmLogin(this,"±¥ÁËÃ´ÍâÂôµÇÂ¼´°¿Ú",true);
+		this.setTitle("é¥±äº†ä¹ˆå¤–å–å¹³å°");
+		dlgLogin=new FrmLogin(this,"é¥±äº†ä¹ˆç™»å½•çª—å£",true);
 		dlgLogin.setVisible(true);
-	    //²Ëµ¥
+		if(userType == 1) {  //ç”¨æˆ·å¹³å°
+			FrmUser frameUser = new FrmUser();
+			frameUser.setVisible(true);
+		}else if(userType == 2){  //ç®¡ç†å‘˜å¹³å°
+			FrmSys frameSys = new FrmSys();
+			frameSys.setVisible(true);
+		}
 
 
 	}

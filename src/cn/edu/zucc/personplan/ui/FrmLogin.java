@@ -18,22 +18,24 @@ import javax.swing.*;
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
+import org.hibernate.usertype.UserType;
 
 
 public class FrmLogin extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
 	private JPanel imagePane = new JPanel();
-	private JButton btnLogin = new JButton("µÇÂ½");
-	private JButton btnRegister = new JButton("×¢²á");
+	private JButton btnLogin = new JButton("ç™»å½•");
+	private JButton btnRegister = new JButton("æ³¨å†Œ");
+	private JButton btnSysLogin = new JButton("ç®¡ç†å‘˜ç™»å½•");
 	private JLabel lIcon = new JLabel();
-	private JLabel labelUser = new JLabel("ÓÃ»§£º");
-	private JLabel labelPwd = new JLabel("ÃÜÂë£º");
+	private JLabel labelUser = new JLabel("ç”¨æˆ·ï¼š");
+	private JLabel labelPwd = new JLabel("å¯†ç ï¼š");
 	private JTextField edtUserId = new JTextField(20);
 	private JPasswordField edtPwd = new JPasswordField(20);
 
 	public void setEdtPwd(JPasswordField edtPwd) {
-		this.edtPwd.setEchoChar('±¥');
+		this.edtPwd.setEchoChar('*');
 	}
 
 	public FrmLogin(Frame f, String s, boolean b) {
@@ -41,7 +43,8 @@ public class FrmLogin extends JDialog implements ActionListener {
 		toolBar.setLayout(new FlowLayout(FlowLayout.CENTER));
 		toolBar.add(this.btnRegister);
 		toolBar.add(btnLogin);
-		toolBar.setLayout(new GridLayout(1,2,5,0));
+		toolBar.add(btnSysLogin);
+		toolBar.setLayout(new GridLayout(1,3,5,0));
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
 		workPane.add(labelUser);
 		workPane.add(edtUserId);
@@ -56,7 +59,7 @@ public class FrmLogin extends JDialog implements ActionListener {
         this.getContentPane().add(imagePane,BorderLayout.NORTH);
 
 		this.setSize(320, 360);
-		// ÆÁÄ»¾ÓÖĞÏÔÊ¾
+		// è®¾ç½®çª—å£å±…ä¸­
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		this.setLocation((int) (width - this.getWidth()) / 2,
@@ -65,6 +68,7 @@ public class FrmLogin extends JDialog implements ActionListener {
 		this.validate();
         this.setResizable(false);
 		btnLogin.addActionListener(this);
+		btnSysLogin.addActionListener(this);
 		this.btnRegister.addActionListener(this);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -81,15 +85,21 @@ public class FrmLogin extends JDialog implements ActionListener {
 			try {
 				BeanUser.currentLoginUser= PersonPlanUtil.userManager.login(user_name, password);
 			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "ç™»å½•å¤±è´¥",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			FrmMain.userType = 1;
 			this.setVisible(false);
 
 		} else if(e.getSource()==this.btnRegister){
-			FrmRegister dlg=new FrmRegister(this,"ÓÃ»§×¢²á",true);
+			FrmRegister dlg=new FrmRegister(this,"é¥±äº†ä¹ˆæ³¨å†Œ",true);
 			dlg.setVisible(true);
+		}else if(e.getSource()==this.btnSysLogin){
+				FrmSysLogin dlg1 = new FrmSysLogin(null,"ç®¡ç†å‘˜ç™»é™†",true);
+				dlg1.setVisible(true);
+			    this.setVisible(false);
 		}
+
 	}
 
 }

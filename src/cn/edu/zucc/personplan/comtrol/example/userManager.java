@@ -9,17 +9,17 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 
-public class ExampleUserManager implements IUserManager {
+public class userManager implements IUserManager {
 
 	@Override
 	public BeanUser reg(String userName, String userSex, String userPassword, String userPassword2, String userTelNumber,
 						String userEmail, String userCity) throws BaseException{
 		// TODO Auto-generated method stub
-		if("".equals(userName)) throw new BusinessException("ÓÃ»§Ãû²»ÄÜÎª¿Õ");
-		if("".equals(userTelNumber)) throw new BusinessException("ÇëÌîĞ´ÊÖ»úºÅ");
-		if("".equals(userPassword)) throw new BusinessException("ÃÜÂë²»ÄÜÎª¿Õ");
-		if(!userPassword.equals(userPassword2)) throw new BusinessException("Á½´ÎÊäÈëÃÜÂë²»Ò»ÖÂ");
-		if(userTelNumber.length() != 11) throw new BusinessException("ÊÖ»úºÅÓ¦Îª11Î»");
+		if("".equals(userName)) throw new BusinessException("ç”¨æˆ·åä¸èƒ½ä¸ºç©º");
+		if("".equals(userTelNumber)) throw new BusinessException("æ‰‹æœºå·ä¸èƒ½ä¸ºç©º");
+		if("".equals(userPassword)) throw new BusinessException("å¯†ç ä¸èƒ½ä¸ºç©º");
+		if(!userPassword.equals(userPassword2)) throw new BusinessException("ä¸¤æ¬¡å¯†ç ä¸ä¸€è‡´");
+		if(userTelNumber.length() != 11) throw new BusinessException("æ‰‹æœºå·é•¿åº¦åº”ä¸º11ä½");
 		Connection conn = null;
 		try {
 			conn = DBUtil2.getConnection();
@@ -27,7 +27,7 @@ public class ExampleUserManager implements IUserManager {
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 			pst.setString(1, userName);
 			java.sql.ResultSet rs = pst.executeQuery();
-			if (rs.next()) throw new BusinessException("¸ÃÕËºÅÒÑ±»×¢²á");
+			if (rs.next()) throw new BusinessException("æ­¤ç”¨æˆ·åå·²å­˜åœ¨");
 			rs.close();
 			pst.close();
 			sql = "insert into tbl_user(user_name,user_sex,user_password,user_telNumber,user_email,user_city,user_regDate,user_isVIP,user_vipEndDate) " +
@@ -67,8 +67,8 @@ public class ExampleUserManager implements IUserManager {
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setString(1,userName);
 			java.sql.ResultSet rs=pst.executeQuery();
-			if(!rs.next()) throw new BusinessException("µÇÂ½ÕËºÅ²»´æÔÚ");
-     		if(!rs.getString(2).equals(userPassword))throw new BusinessException("ÃÜÂë´íÎó");
+			if(!rs.next()) throw new BusinessException("ç”¨æˆ·åä¸å­˜åœ¨");
+     		if(!rs.getString(2).equals(userPassword))throw new BusinessException("å¯†ç é”™è¯¯");
 			BeanUser u=new BeanUser();
 			u.setUser_name(rs.getString(1));
 			u.setUser_id(rs.getInt(3));
@@ -95,18 +95,18 @@ public class ExampleUserManager implements IUserManager {
 	public void changePwd(BeanUser user, String oldPwd, String newPwd,
 			String newPwd2) throws BaseException {
 		// TODO Auto-generated method stub
-		if(oldPwd==null) throw new BusinessException("Ô­Ê¼ÃÜÂë²»ÄÜÎª¿Õ");
-		if(newPwd==null || "".equals(newPwd) || newPwd.length()>16) throw new BusinessException("±ØĞëÎª1-16¸ö×Ö·û");
+		if(oldPwd==null) throw new BusinessException("å¯†ç ä¸èƒ½ä¸ºç©º");
+		if(newPwd==null || "".equals(newPwd) || newPwd.length()>16) throw new BusinessException("ä¸¤æ¬¡å¯†ç ä¸ä¸€è‡´");
 		Connection conn=null;
 		try {
-			conn=DBUtil.getConnection();
+			conn=DBUtil2.getConnection();
 			String sql="select user_pwd from tbl_user where user_id=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setInt(1,user.getUser_id());
 			java.sql.ResultSet rs=pst.executeQuery();
-			if(!rs.next()) throw new BusinessException("µÇÂ½ÕËºÅ²»´æÔÚ");
-			if(!oldPwd.equals(rs.getString(1))) throw new BusinessException("Ô­Ê¼ÃÜÂë´íÎó");
-			if(!newPwd.equals(newPwd2)) throw new BusinessException("ÊäÈëµÄĞÂÃÜÂëÁ½´Î²»Ò»ÖÂ");
+			if(!rs.next()) throw new BusinessException("ç”¨æˆ·åä¸å­˜åœ¨");
+			if(!oldPwd.equals(rs.getString(1))) throw new BusinessException("11");
+			if(!newPwd.equals(newPwd2)) throw new BusinessException("11");
 			rs.close();
 			pst.close();
 			sql="update tbl_user set user_password=? where user_id=?";
@@ -129,5 +129,31 @@ public class ExampleUserManager implements IUserManager {
 				}
 		}
 	}
-
+	@Override
+	public void systemUserLogin(String systemUserName,String systemUserPassword)throws BaseException{
+		Connection conn=null;
+		try {
+			conn= DBUtil2.getConnection();
+			String sql="select systemUser_password from tbl_systemuser where systemUser_name=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,systemUserName);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(!rs.next()) throw new BusinessException("è´¦å·åä¸å­˜åœ¨");
+			if(!rs.getString(1).equals(systemUserPassword)) throw new BusinessException("å¯†ç é”™è¯¯");
+			rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
 }
