@@ -14,7 +14,7 @@ public interface IMerchantManager {
 
     public void deleteMerchant(BeanMerchant curMerchant) throws BaseException;
 
-    public List<BeanMerchant> loadAll() throws BaseException;
+    public List<BeanMerchant> loadAllMerchant() throws BaseException;
 
 
 }

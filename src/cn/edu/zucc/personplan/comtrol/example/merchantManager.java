@@ -103,7 +103,7 @@ public class merchantManager implements IMerchantManager{
     }
 
     @Override
-    public List<BeanMerchant> loadAll() throws BaseException{
+    public List<BeanMerchant> loadAllMerchant() throws BaseException{
         List<BeanMerchant> result=new ArrayList<BeanMerchant>();
         Connection conn = null;
         try {

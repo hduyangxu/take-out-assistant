@@ -1,6 +1,7 @@
 package cn.edu.zucc.personplan.ui;
 
 import cn.edu.zucc.personplan.PersonPlanUtil;
+import cn.edu.zucc.personplan.model.BeanFullReduction;
 import cn.edu.zucc.personplan.model.BeanMerchant;
 import cn.edu.zucc.personplan.model.BeanProductDetails;
 import cn.edu.zucc.personplan.model.BeanProductType;
@@ -49,7 +50,7 @@ public class FrmSys extends JFrame implements ActionListener {
     private JMenuItem  menuItem_deleteDiscountCoupon=new JMenuItem("删除优惠券");
     private JMenuItem  menuItem_modifyDiscountCoupon=new JMenuItem("修改优惠券");
 
-    private JPanel statusBar = new JPanel();
+    private JPanel activityBar = new JPanel();
 
     private Object tblMerchantTitle[]= BeanMerchant.tableTitles;
     private Object tblMerchantData[][];
@@ -58,22 +59,30 @@ public class FrmSys extends JFrame implements ActionListener {
 
     private Object tblProductTypeTitle[]= BeanProductType.tableTitles;
     private Object tblProductTypeData[][];
-    DefaultTableModel tabProductType=new DefaultTableModel();
-    private JTable dataTableProductType=new JTable(tabProductType);
+    DefaultTableModel tabProductTypeModel=new DefaultTableModel();
+    private JTable dataTableProductType=new JTable(tabProductTypeModel);
 
     private Object tblProductDetailsTitle[]= BeanProductDetails.tableTitles;
     private Object tblProductDetailsData[][];
-    DefaultTableModel tabProductDetails=new DefaultTableModel();
-    private JTable dataTableProductDetails=new JTable(tabProductDetails);
+    DefaultTableModel tabProductDetailsModel=new DefaultTableModel();
+    private JTable dataTableProductDetails=new JTable(tabProductDetailsModel);
+
+    private Object tblFullReductionTitle[]= BeanFullReduction.tableTitles;
+    private Object tblFullReductionData[][];
+    DefaultTableModel tabFullReductionModel=new DefaultTableModel();
+    private JTable dataTableFullReduction=new JTable(tabFullReductionModel);
 
     private BeanMerchant curMerchant=null;
     private BeanProductType curProductType=null;
+
     List<BeanMerchant> allMerchant=null;
-    List<BeanProductType> allProductType=null;
-    List<BeanProductDetails> allProductDetails=null;
+    List<BeanProductType> productType=null;
+    List<BeanProductDetails> productDetails=null;
+    List<BeanFullReduction> fullReduction=null;
+
     private void reloadMerchantTable(){//重新载入商家信息
         try {
-            allMerchant=PersonPlanUtil.merchantManager.loadAll();
+            allMerchant=PersonPlanUtil.merchantManager.loadAllMerchant();
         } catch (BaseException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
             return;
@@ -91,42 +100,61 @@ public class FrmSys extends JFrame implements ActionListener {
     private void reloadProductTypeTable(int merchantIdx){
         if(merchantIdx<0) return;
         curMerchant=allMerchant.get(merchantIdx);
-//        try {
-//            planSteps=PersonPlanUtil.stepManager.loadSteps(curPlan);
-//        } catch (BaseException e) {
-//            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//        tblStepData =new Object[planSteps.size()][BeanStep.tblStepTitle.length];
-//        for(int i=0;i<planSteps.size();i++){
-//            for(int j=0;j<BeanStep.tblStepTitle.length;j++)
-//                tblStepData[i][j]=planSteps.get(i).getCell(j);
-//        }
-//
-//        tabStepModel.setDataVector(tblStepData,tblStepTitle);
-//        this.dataTableStep.validate();
-//        this.dataTableStep.repaint();
+        try {
+            productType=PersonPlanUtil.productTypeManager.loadProductType(curMerchant);
+        } catch (BaseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        tblProductTypeData = new Object[productType.size()][BeanProductType.tableTitles.length];
+        for(int i=0;i<productType.size();i++){
+            for(int j=0;j<BeanProductType.tableTitles.length;j++)
+                tblProductTypeData[i][j]=productType.get(i).getCell(j);
+        }
+        tabProductTypeModel.setDataVector(tblProductTypeData,tblProductTypeTitle);
+        this.dataTableProductType.validate();
+        this.dataTableProductType.repaint();
     }
 
-//    private void reloadPlanStepTabel(int planIdx){
-//        if(planIdx<0) return;
-//        curPlan=allPlan.get(planIdx);
-//        try {
-//            planSteps=PersonPlanUtil.stepManager.loadSteps(curPlan);
-//        } catch (BaseException e) {
-//            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//        tblStepData =new Object[planSteps.size()][BeanStep.tblStepTitle.length];
-//        for(int i=0;i<planSteps.size();i++){
-//            for(int j=0;j<BeanStep.tblStepTitle.length;j++)
-//                tblStepData[i][j]=planSteps.get(i).getCell(j);
-//        }
-//
-//        tabStepModel.setDataVector(tblStepData,tblStepTitle);
-//        this.dataTableStep.validate();
-//        this.dataTableStep.repaint();
-//    }
+    private void reloadProductDetailsTable(int productTypeIdx){
+        if(productTypeIdx<0) return;
+        curProductType=productType.get(productTypeIdx);
+        try {
+            productDetails=PersonPlanUtil.productDetailsManager.loadProductDetails(curProductType);
+        } catch (BaseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        tblProductDetailsData =new Object[productDetails.size()][BeanProductDetails.tableTitles.length];
+        for(int i=0;i<productDetails.size();i++){
+            for(int j=0;j<BeanProductDetails.tableTitles.length;j++)
+                tblProductDetailsData[i][j]=productDetails.get(i).getCell(j);
+        }
+
+        tabProductDetailsModel.setDataVector(tblProductDetailsData,tblProductDetailsTitle);
+        this.dataTableProductDetails.validate();
+        this.dataTableProductDetails.repaint();
+    }
+
+    private void reloadFullReduction(int merchantIdx){
+        if(merchantIdx<0) return;
+        curMerchant=allMerchant.get(merchantIdx);
+        try {
+             fullReduction=PersonPlanUtil.fullReductionManager.loadFullReduction(curMerchant);
+        } catch (BaseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        tblFullReductionData =new Object[fullReduction.size()][BeanFullReduction.tableTitles.length];
+        for(int i=0;i<fullReduction.size();i++){
+            for(int j=0;j<BeanFullReduction.tableTitles.length;j++)
+                tblFullReductionData[i][j]=fullReduction.get(i).getCell(j);
+        }
+
+        tabFullReductionModel.setDataVector(tblFullReductionData,tblFullReductionTitle);
+        this.dataTableFullReduction.validate();
+        this.dataTableFullReduction.repaint();
+    }
 
 
     public FrmSys(){
@@ -156,6 +184,9 @@ public class FrmSys extends JFrame implements ActionListener {
         menubar.add(menu_fullReduction);
         menubar.add(menu_discountCoupon);
         this.setJMenuBar(menubar);
+
+
+
         //添加商品列
         this.getContentPane().add(new JScrollPane(this.dataTableMerchant),BorderLayout.WEST);
         this.dataTableMerchant.addMouseListener(new MouseAdapter (){
@@ -166,10 +197,34 @@ public class FrmSys extends JFrame implements ActionListener {
                 if(i<0) {
                     return;
                 }
-                FrmSys.this.reloadProductTypeTable(i);
+                FrmSys.this.reloadProductTypeTable(i); //更新选中的商家行的产品类别
+                FrmSys.this.reloadFullReduction(i);  //更新选中的商家行的满减方案
             }
 
         });
+        //添加商品类别列
+        this.getContentPane().add(new JScrollPane(this.dataTableProductType), BorderLayout.CENTER);
+        //添加满减方案列
+//        activityBar.setLayout(new BorderLayout());
+//        activityBar.setSize(100,100);
+        activityBar.add(new JScrollPane(this.dataTableFullReduction), BorderLayout.WEST);
+        this.getContentPane().add(activityBar, BorderLayout.NORTH);
+
+        this.dataTableProductType.addMouseListener(new MouseAdapter (){
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int i=FrmSys.this.dataTableProductType.getSelectedRow();
+                if(i<0) {
+                    return;
+                }
+                FrmSys.this.reloadProductDetailsTable(i); //更新选中的产品类别行
+            }
+
+        });
+        //添加商品列
+        this.getContentPane().add(new JScrollPane(this.dataTableProductDetails), BorderLayout.EAST);
+
         this.reloadMerchantTable();
 
 
@@ -179,32 +234,147 @@ public class FrmSys extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==this.menuItem_addMerchant){
-            FrmAddMerchant dlg=new FrmAddMerchant(this,"添加商家",true);
+        if (e.getSource() == this.menuItem_addMerchant) {
+            FrmAddMerchant dlg = new FrmAddMerchant(this, "添加商家", true);
             dlg.setVisible(true);
             reloadMerchantTable();
-        }else if(e.getSource()==this.menuItem_modifyMerchant){
-            if(this.curMerchant==null) {
-                JOptionPane.showMessageDialog(null, "请选择商家", "错误",JOptionPane.ERROR_MESSAGE);
+        } else if (e.getSource() == this.menuItem_modifyMerchant) {
+            if (this.curMerchant == null) {
+                JOptionPane.showMessageDialog(null, "请选择商家", "错误", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-                FrmModifyMerchant dlg=new FrmModifyMerchant(this,"修改商家信息",true);
-                dlg.merchant=curMerchant;
-                dlg.setVisible(true);
-                reloadMerchantTable();
-        }else if(e.getSource()==this.menuItem_deleteMerchant){
-            if(this.curMerchant==null) {
-                JOptionPane.showMessageDialog(null, "请选择商家", "错误",JOptionPane.ERROR_MESSAGE);
+            FrmModifyMerchant dlg = new FrmModifyMerchant(this, "修改商家信息", true);
+            dlg.merchant = curMerchant;
+            dlg.setVisible(true);
+            reloadMerchantTable();
+        } else if (e.getSource() == this.menuItem_deleteMerchant) {
+            if (this.curMerchant == null) {
+                JOptionPane.showMessageDialog(null, "请选择商家", "错误", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
                 PersonPlanUtil.merchantManager.deleteMerchant(this.curMerchant);
-                JOptionPane.showMessageDialog(null, "删除成功", "成功",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "删除成功", "成功", JOptionPane.INFORMATION_MESSAGE);
                 reloadMerchantTable();
             } catch (BaseException e1) {
-                JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+        } else if (e.getSource() == this.menuItem_addProductType) {
+            if (this.curMerchant == null) {
+                JOptionPane.showMessageDialog(null, "请选择商家", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            FrmAddProductType dlg = new FrmAddProductType(this, "添加产品类别", true);
+            dlg.merchant = curMerchant;
+            dlg.setVisible(true);
+            int i = FrmSys.this.dataTableMerchant.getSelectedRow();
+            if (i < 0) {
+                return;
+            }
+            FrmSys.this.reloadProductTypeTable(i);
+            reloadMerchantTable();
+        } else if (e.getSource() == this.menuItem_modifyProductType) {
+            if (this.curProductType == null) {
+                JOptionPane.showMessageDialog(null, "请选择产品类别", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            FrmModifyProductType dlg = new FrmModifyProductType(this, "修改产品类别", true);
+            dlg.productType = curProductType;
+            dlg.setVisible(true);
+            int i = FrmSys.this.dataTableMerchant.getSelectedRow();
+            if (i < 0) {
+                return;
+            }
+            FrmSys.this.reloadProductTypeTable(i);
+            reloadMerchantTable();
+        } else if (e.getSource() == this.menuItem_deleteProductType) {
+            if (this.curProductType == null) {
+                JOptionPane.showMessageDialog(null, "请选择产品类别", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                PersonPlanUtil.productTypeManager.deleteProductType(this.curProductType);
+                JOptionPane.showMessageDialog(null, "删除成功", "成功", JOptionPane.INFORMATION_MESSAGE);
+                int i = FrmSys.this.dataTableMerchant.getSelectedRow();
+                if (i < 0) {
+                    return;
+                }
+                FrmSys.this.reloadProductTypeTable(i);
+                reloadMerchantTable();
+            } catch (BaseException e1) {
+                JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else if (e.getSource() == this.menuItem_addProduct) {
+            if (this.curProductType == null) {
+                JOptionPane.showMessageDialog(null, "请选择商品类别", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            FrmAddProduct dlg = new FrmAddProduct(this, "添加商品", true);
+            dlg.productType = curProductType;
+            dlg.setVisible(true);
+            int i = FrmSys.this.dataTableProductDetails.getSelectedRow();
+            if (i < 0) {
+                return;
+            }
+            FrmSys.this.reloadProductDetailsTable(i);
+            int j = FrmSys.this.dataTableProductType.getSelectedRow();
+            if (j < 0) {
+                return;
+            }
+            FrmSys.this.reloadProductTypeTable(j);
+//            reloadMerchantTable();
+        } else if (e.getSource() == this.menuItem_deleteProduct) {
+            int i=FrmSys.this.dataTableProductDetails.getSelectedRow();
+            if (i<0) {
+                JOptionPane.showMessageDialog(null, "请选择产品", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                PersonPlanUtil.productDetailsManager.deleteProduct(this.productDetails.get(i));
+                JOptionPane.showMessageDialog(null, "删除成功", "成功", JOptionPane.INFORMATION_MESSAGE);
+                FrmSys.this.reloadProductDetailsTable(i);
+                int j = FrmSys.this.dataTableProductType.getSelectedRow();
+                if (j < 0) {
+                    return;
+                }
+                FrmSys.this.reloadProductTypeTable(j);
+//                reloadMerchantTable();
+            } catch (BaseException e1) {
+                JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }else if (e.getSource() == this.menuItem_modifyProduct) {
+            int i=FrmSys.this.dataTableProductDetails.getSelectedRow();
+            if (i<0) {
+                JOptionPane.showMessageDialog(null, "请选择产品", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+                FrmModifyProductDetails dlg=new FrmModifyProductDetails(this, "修改商品", true);
+                dlg.productDetails=productDetails.get(i);
+                dlg.setVisible(true);
+                FrmSys.this.reloadProductDetailsTable(i);
+                int j = FrmSys.this.dataTableProductType.getSelectedRow();
+                if (j < 0) {
+                    return;
+                }
+                FrmSys.this.reloadProductTypeTable(j);
+//                reloadMerchantTable();
+        }else if (e.getSource() == this.menuItem_addProductType) {
+            if (this.curMerchant == null) {
+                JOptionPane.showMessageDialog(null, "请选择商家", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            FrmAddFullReduction dlg = new FrmAddFullReduction(this, "添加满减信息", true);
+            dlg.merchant = curMerchant;
+            dlg.setVisible(true);
+            int i = FrmSys.this.dataTableMerchant.getSelectedRow();
+            if (i < 0) {
+                return;
+            }
+            reloadMerchantTable();
         }
     }
 }
