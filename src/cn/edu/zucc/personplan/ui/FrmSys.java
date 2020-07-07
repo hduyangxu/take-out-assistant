@@ -8,15 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -28,8 +20,10 @@ public class FrmSys extends JFrame implements ActionListener {
     private JMenu menu_product=new JMenu("产品管理");
     private JMenu menu_fullReduction=new JMenu("满减管理");
     private JMenu menu_discountCoupon=new JMenu("优惠券管理");
+    private JMenu menu_other=new JMenu("其他管理");
 
-    private JMenuItem  menuItem_showMerchant=new JMenuItem("显示商家详情");
+
+
     private JMenuItem  menuItem_addMerchant=new JMenuItem("添加商家");
     private JMenuItem  menuItem_deleteMerchant=new JMenuItem("删除商家");
     private JMenuItem  menuItem_modifyMerchant=new JMenuItem("修改商家信息");
@@ -45,6 +39,8 @@ public class FrmSys extends JFrame implements ActionListener {
     private JMenuItem  menuItem_addDiscountCoupon=new JMenuItem("添加优惠券");
     private JMenuItem  menuItem_deleteDiscountCoupon=new JMenuItem("删除优惠券");
     private JMenuItem  menuItem_modifyDiscountCoupon=new JMenuItem("修改优惠券");
+    private JMenuItem  menuItem_rider=new JMenuItem("骑手管理");
+    private JMenuItem  menuItem_order=new JMenuItem("订单管理");
 
     private JPanel activityBar = new JPanel();
 
@@ -163,6 +159,7 @@ public class FrmSys extends JFrame implements ActionListener {
         this.dataTableFullReduction.validate();
         this.dataTableFullReduction.repaint();
     }
+
     private void reloadDiscountCoupon(int merchantIdx){
         if(merchantIdx<0) return;
         curMerchant=allMerchant.get(merchantIdx);
@@ -189,7 +186,6 @@ public class FrmSys extends JFrame implements ActionListener {
         this.setTitle("饱了么外卖管理平台");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //菜单
-        this.menu_merchant.add(this.menuItem_showMerchant); this.menuItem_showMerchant.addActionListener(this);
         this.menu_merchant.add(this.menuItem_addMerchant); this.menuItem_addMerchant.addActionListener(this);
         this.menu_merchant.add(this.menuItem_deleteMerchant); this.menuItem_deleteMerchant.addActionListener(this);
         this.menu_merchant.add(this.menuItem_modifyMerchant); this.menuItem_modifyMerchant.addActionListener(this);
@@ -205,12 +201,15 @@ public class FrmSys extends JFrame implements ActionListener {
         this.menu_discountCoupon.add(this.menuItem_addDiscountCoupon); this.menuItem_addDiscountCoupon.addActionListener(this);
         this.menu_discountCoupon.add(this.menuItem_deleteDiscountCoupon); this.menuItem_deleteDiscountCoupon.addActionListener(this);
         this.menu_discountCoupon.add(this.menuItem_modifyDiscountCoupon); this.menuItem_modifyDiscountCoupon.addActionListener(this);
+        this.menu_other.add(menuItem_rider); this.menuItem_rider.addActionListener(this);
+        this.menu_other.add(menuItem_order); this.menuItem_order.addActionListener(this);
 
         menubar.add(menu_merchant);
         menubar.add(menu_productType);
         menubar.add(menu_product);
         menubar.add(menu_fullReduction);
         menubar.add(menu_discountCoupon);
+        menubar.add(menu_other);
         this.setJMenuBar(menubar);
 
         JScrollPane js1=new JScrollPane(this.dataTableMerchant);
@@ -225,7 +224,7 @@ public class FrmSys extends JFrame implements ActionListener {
         js5.setPreferredSize(new Dimension(800,100));
 
 
-        //添加商品列
+        //添加商家列
         this.getContentPane().add(js1,BorderLayout.WEST);
         this.dataTableMerchant.addMouseListener(new MouseAdapter (){
 
@@ -265,7 +264,6 @@ public class FrmSys extends JFrame implements ActionListener {
         this.getContentPane().add(js3, BorderLayout.EAST);
 
         this.reloadMerchantTable();
-
 
 
 
@@ -469,6 +467,9 @@ public class FrmSys extends JFrame implements ActionListener {
             dlg.discountCoupon = discountCoupon.get(i);
             dlg.setVisible(true);
             reloadDiscountCoupon(i);
+        }else if(e.getSource()==this.menuItem_rider){
+            FrmRider frameRider = new FrmRider();
+            frameRider.setVisible(true);
         }
     }
 }

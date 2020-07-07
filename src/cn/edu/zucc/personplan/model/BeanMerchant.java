@@ -5,6 +5,8 @@ public class BeanMerchant {
     private int merchant_id;
     private String merchant_name;
     private int merchant_starRated;
+    private float merchant_avgConsumption;
+    private int merchant_totalSales;
 
     public String getCell(int col){
             if(col==0) return String.valueOf(this.merchant_id);
@@ -55,6 +57,4 @@ public class BeanMerchant {
         this.merchant_totalSales = merchant_totalSales;
     }
 
-    private float merchant_avgConsumption;
-    private int merchant_totalSales;
 }

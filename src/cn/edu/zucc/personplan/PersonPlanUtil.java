@@ -10,4 +10,5 @@ public class PersonPlanUtil {
 	public static IProductDetailsManager productDetailsManager = new productDetailsManager();
 	public static IFullReductionManager fullReductionManager = new fullReductionManager();
 	public static IDiscountCouponManager discountCouponManager = new discountCouponManager();
+	public static IRiderManager riderManager = new riderManager();
 }

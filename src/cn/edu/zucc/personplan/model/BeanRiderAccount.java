@@ -6,6 +6,14 @@ public class BeanRiderAccount {
     private int order_id;
     private String order_userEvaluate;
     private float unitPrice;
+    public static final String[] tableTitles={"订单编号","用户评价","收入"};
+
+    public String getCell(int col){
+        if(col==0) return String.valueOf(this.order_id);
+        else if(col==1) return this.order_userEvaluate;
+        else if(col==2) return String.valueOf(this.unitPrice);
+        else return "";
+    }
 
     public int getAccount_id() {
         return account_id;

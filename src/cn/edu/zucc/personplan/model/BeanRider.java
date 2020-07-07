@@ -7,6 +7,15 @@ public class BeanRider {
     private String rider_name;
     private Date rider_joinDate;
     private String rider_identification;
+    public static final String[] tableTitles={"骑手编号","骑手名","注册时间","等级"};
+
+    public String getCell(int col){
+        if(col==0) return String.valueOf(this.rider_id);
+        else if(col==1) return this.rider_name;
+        else if(col==2) return String.valueOf(this.rider_joinDate);
+        else if(col==3) return this.rider_identification;
+        else return "";
+    }
 
     public int getRider_id() {
         return rider_id;
