@@ -78,10 +78,24 @@ public class merchantManager implements IMerchantManager{
         Connection conn=null;
         try {
             conn=DBUtil2.getConnection();
-            String sql="select * from tbl_merchant,tbl_productType where tbl_productType.merchant_id = tbl_merchant.merchant_id";
+            String sql="select * from tbl_merchant,tbl_productType where tbl_productType.merchant_id = tbl_merchant.merchant_id" +
+                    " and tbl_merchant.merchant_id = ?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,curMerchant.getMerchant_id());
             java.sql.ResultSet rs = pst.executeQuery();
             if(rs.next()) throw new BusinessException("无法删除，该商家下尚有商品分类");
+            sql="select * from tbl_merchant,tbl_fullReduction where tbl_fullReduction.merchant_id = tbl_merchant.merchant_id" +
+                    " and tbl_merchant.merchant_id = ?";
+            pst=conn.prepareStatement(sql);
+            pst.setInt(1,curMerchant.getMerchant_id());
+            rs=pst.executeQuery();
+            if(rs.next()) throw new BusinessException("无法删除，该商家下尚有满减信息");
+            sql="select * from tbl_merchant,tbl_discountCoupon where tbl_discountCoupon.merchant_id = tbl_merchant.merchant_id" +
+                    " and tbl_merchant.merchant_id = ?";
+            pst=conn.prepareStatement(sql);
+            pst.setInt(1,curMerchant.getMerchant_id());
+            rs=pst.executeQuery();
+            if(rs.next()) throw new BusinessException("无法删除，该商家下尚有优惠券信息");
             sql = "delete from tbl_merchant where merchant_id = ?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,curMerchant.getMerchant_id());

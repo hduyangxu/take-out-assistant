@@ -6,6 +6,18 @@ public class BeanDiscountCoupon {
     private int discountCoupon_id;
     private int merchant_id;
     private float discountCoupon_money;
+    private Date discountCoupon_startDate;
+    private Date discountCoupon_endDate;
+    private int discountCoupon_request;
+    public static final String[] tableTitles={"优惠金额","起始日期","截止日期","需要订单数"};
+
+    public String getCell(int col){
+        if(col==0) return String.valueOf(this.discountCoupon_money);
+        else if(col==1) return String.valueOf(this.discountCoupon_startDate);
+        else if(col==2) return String.valueOf(this.discountCoupon_endDate);
+        else if(col==3) return String.valueOf(this.discountCoupon_request);
+        else return "";
+    }
 
     public int getDiscountCoupon_id() {
         return discountCoupon_id;
@@ -55,7 +67,4 @@ public class BeanDiscountCoupon {
         this.discountCoupon_request = discountCoupon_request;
     }
 
-    private Date discountCoupon_startDate;
-    private Date discountCoupon_endDate;
-    private int discountCoupon_request;
 }

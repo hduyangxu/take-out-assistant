@@ -22,8 +22,8 @@ public class FrmAddFullReduction extends JDialog implements ActionListener {
 
     private JTextField edtRequest = new JTextField(20);
     private JTextField edtMoney = new JTextField(20);
-    private JRadioButton conflict = new JRadioButton();
-    private JRadioButton notConflict = new JRadioButton();
+    private JRadioButton conflict = new JRadioButton("是");
+    private JRadioButton notConflict = new JRadioButton("否");
     private ButtonGroup isConflict = new ButtonGroup();
 
     public FrmAddFullReduction(JFrame f, String s, boolean b) {

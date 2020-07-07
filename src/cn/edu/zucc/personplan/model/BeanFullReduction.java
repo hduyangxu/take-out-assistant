@@ -8,9 +8,8 @@ public class BeanFullReduction {
     private float FullReduction_money;
     private String FullReduction_isConflict;
 
-    private String finalStr = "满"+this.fullReduction_request+"减"+this.FullReduction_money;
     public String getCell(int col){
-        if(col==0) return this.finalStr;
+        if(col==0) return "满"+this.fullReduction_request+"减"+this.FullReduction_money;
         else if(col==1) return this.FullReduction_isConflict;
         else return "";
     }
