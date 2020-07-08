@@ -1,16 +1,14 @@
 package cn.edu.zucc.personplan.model;
 
 public class BeanFullReduction {
-    public static final String[] tableTitles={"满减力度","是否与其他优惠冲突"};
+    public static final String[] tableTitles={"满减力度"};
     private int fullReduction_id;
     private int merchant_id;
     private float fullReduction_request;
     private float FullReduction_money;
-    private String FullReduction_isConflict;
 
     public String getCell(int col){
         if(col==0) return "满"+this.fullReduction_request+"减"+this.FullReduction_money;
-        else if(col==1) return this.FullReduction_isConflict;
         else return "";
     }
 
@@ -46,11 +44,4 @@ public class BeanFullReduction {
         FullReduction_money = fullReduction_money;
     }
 
-    public String getFullReduction_isConflict() {
-        return FullReduction_isConflict;
-    }
-
-    public void setFullReduction_isConflict(String fullReduction_isConflict) {
-        FullReduction_isConflict = fullReduction_isConflict;
-    }
 }

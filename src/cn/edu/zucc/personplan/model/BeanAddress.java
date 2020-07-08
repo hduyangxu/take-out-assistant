@@ -8,6 +8,15 @@ public class BeanAddress {
     private String address_zone;
     private String address_detail;
     private String address_people;
+    private String address_tel;
+    public static final String[] tableTitles={"详细地址","联系人","电话号码"};
+
+    public String getCell(int col){
+        if(col==0) return this.address_detail;
+        else if(col==1) return this.address_people;
+        else if(col==2) return this.address_tel;
+        else return "";
+    }
 
     public int getAddress_id() {
         return address_id;
@@ -73,6 +82,6 @@ public class BeanAddress {
         this.address_tel = address_tel;
     }
 
-    private String address_tel;
+
 
 }

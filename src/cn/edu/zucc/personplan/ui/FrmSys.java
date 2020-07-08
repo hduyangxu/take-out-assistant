@@ -22,8 +22,6 @@ public class FrmSys extends JFrame implements ActionListener {
     private JMenu menu_discountCoupon=new JMenu("优惠券管理");
     private JMenu menu_other=new JMenu("其他管理");
 
-
-
     private JMenuItem  menuItem_addMerchant=new JMenuItem("添加商家");
     private JMenuItem  menuItem_deleteMerchant=new JMenuItem("删除商家");
     private JMenuItem  menuItem_modifyMerchant=new JMenuItem("修改商家信息");
@@ -219,7 +217,7 @@ public class FrmSys extends JFrame implements ActionListener {
         JScrollPane js3=new JScrollPane(this.dataTableProductDetails);
         js3.setPreferredSize(new Dimension(600,400));
         JScrollPane js4=new JScrollPane(this.dataTableFullReduction);
-        js4.setPreferredSize(new Dimension(400,100));
+        js4.setPreferredSize(new Dimension(300,100));
         JScrollPane js5=new JScrollPane((this.dataTableDiscountCoupon));
         js5.setPreferredSize(new Dimension(800,100));
 
@@ -463,7 +461,7 @@ public class FrmSys extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "请选择优惠券", "错误", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            FrmModifyDiscountCoupon dlg = new FrmModifyDiscountCoupon(this, "修改满减信息", true);
+            FrmModifyDiscountCoupon dlg = new FrmModifyDiscountCoupon(this, "修改优惠信息", true);
             dlg.discountCoupon = discountCoupon.get(i);
             dlg.setVisible(true);
             reloadDiscountCoupon(i);

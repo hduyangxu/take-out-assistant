@@ -18,7 +18,6 @@ import javax.swing.*;
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
-import org.hibernate.usertype.UserType;
 
 
 public class FrmLogin extends JDialog implements ActionListener {

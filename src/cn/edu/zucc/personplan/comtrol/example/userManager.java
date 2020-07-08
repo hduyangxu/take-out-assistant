@@ -91,24 +91,53 @@ public class userManager implements IUserManager {
 	}
 
 
+	public void changeName(BeanUser user, String name)throws BaseException{
+		if(name==null||"".equals(name)) throw new BusinessException("用户名不能为空");
+		Connection conn=null;
+		try {
+			conn=DBUtil2.getConnection();
+			String sql="select * from tbl_user where user_name=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,name);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(rs.next()) throw new BusinessException("用户名已存在");
+			sql="update tbl_user set user_name = ? where user_id = ?";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1, name);
+			pst.setInt(2, user.getUser_id());
+			pst.execute();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+	}
+
 	@Override
 	public void changePwd(BeanUser user, String oldPwd, String newPwd,
 			String newPwd2) throws BaseException {
 		// TODO Auto-generated method stub
 		if(oldPwd==null) throw new BusinessException("密码不能为空");
-		if(newPwd==null || "".equals(newPwd) || newPwd.length()>16) throw new BusinessException("两次密码不一致");
+		if(newPwd==null || "".equals(newPwd) || !newPwd.equals(newPwd2)) throw new BusinessException("两次密码不一致");
 		Connection conn=null;
 		try {
 			conn=DBUtil2.getConnection();
-			String sql="select user_pwd from tbl_user where user_id=?";
+			String sql="select user_password from tbl_user where user_id=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setInt(1,user.getUser_id());
 			java.sql.ResultSet rs=pst.executeQuery();
-			if(!rs.next()) throw new BusinessException("用户名不存在");
-			if(!oldPwd.equals(rs.getString(1))) throw new BusinessException("11");
-			if(!newPwd.equals(newPwd2)) throw new BusinessException("11");
-			rs.close();
-			pst.close();
+			if(!rs.next()) throw new BusinessException("搜索不到用户");
+			if(!oldPwd.equals(rs.getString(1))) throw new BusinessException("原密码错误");
 			sql="update tbl_user set user_password=? where user_id=?";
 			pst=conn.prepareStatement(sql);
 			pst.setString(1, newPwd);

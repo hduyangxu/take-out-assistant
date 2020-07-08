@@ -16,16 +16,15 @@ import java.util.List;
 
 public class fullReductionManager implements IFullReductionManager {
     @Override
-    public void addFullReduction(BeanMerchant merchant, float fullReduction_request, float fullReduction_money, String fullReduction_isConflict) throws BaseException{
+    public void addFullReduction(BeanMerchant merchant, float fullReduction_request, float fullReduction_money) throws BaseException{
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="insert into tbl_fullReduction (merchant_id,fullReduction_request,fullReduction_money,fullReduction_isConflict) values (?,?,?,?)";
+            String sql="insert into tbl_fullReduction (merchant_id,fullReduction_request,fullReduction_money) values (?,?,?)";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
             pst.setFloat(2,fullReduction_request);
             pst.setFloat(3,fullReduction_money);
-            pst.setString(4,fullReduction_isConflict);
             pst.execute();
             pst.close();
         } catch (SQLException e) {
@@ -43,26 +42,17 @@ public class fullReductionManager implements IFullReductionManager {
         }
     }
 
-    public void modifyReduction(BeanFullReduction fullReduction, float fullReduction_request, float fullReduction_money, String fullReduction_isConflict) throws BaseException{
+    public void modifyReduction(BeanFullReduction fullReduction, float fullReduction_request, float fullReduction_money) throws BaseException{
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="update tbl_fullReduction set fullReduction_request = ? where fullReduction_id = ?";
+            String sql="update tbl_fullReduction set fullReduction_request = ?,fullReduction_money = ? where fullReduction_id = ?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
             pst.setFloat(1,fullReduction_request);
-            pst.setInt(2,fullReduction.getFullReduction_id());
+            pst.setFloat(2,fullReduction_money);
+            pst.setInt(3,fullReduction.getFullReduction_id());
             pst.execute();
-            sql="update tbl_fullReduction set fullReduction_money = ? where fullReduction_id = ?";
-            pst=conn.prepareStatement(sql);
-            pst.setFloat(1,fullReduction_money);
-            pst.setInt(2,fullReduction.getFullReduction_id());
-            pst.execute();
-            sql="update tbl_fullReduction set fullReduction_isConflict = ? where fullReduction_id = ?";
-            pst=conn.prepareStatement(sql);
-            pst.setString(1,fullReduction_isConflict);
-            pst.setInt(2,fullReduction.getFullReduction_id());
-            pst.execute();
-            pst.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DbException(e);
@@ -116,7 +106,6 @@ public class fullReductionManager implements IFullReductionManager {
                 bfr.setMerchant_id(rs.getInt(2));
                 bfr.setFullReduction_request(rs.getFloat(3));
                 bfr.setFullReduction_money(rs.getFloat(4));
-                bfr.setFullReduction_isConflict(rs.getString(5));
                 result.add(bfr);
             }
             return result;

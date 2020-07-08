@@ -58,20 +58,20 @@ public class FrmRider extends JFrame implements ActionListener {
     private void reloadRiderAccountTable(int riderIdx){//重新载入骑手入账表信息
         if(riderIdx<0) return;
         curRider=allRider.get(riderIdx);
-//        try {
-//            riderAccount=PersonPlanUtil.riderManager.loadAllRider();
-//        } catch (BaseException e) {
-//            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//        tblRiderAccountData=new Object[allRider.size()][BeanRider.tableTitles.length];
-//        for(int i=0;i<allRider.size();i++){
-//            for(int j=0;j<BeanRider.tableTitles.length;j++)
-//                tblRiderAccountData[i][j]=allRider.get(i).getCell(j);
-//        }
-//        tabRiderModel.setDataVector(tblRiderData,tblRiderTitles);
-//        this.dataTableRider.validate();
-//        this.dataTableRider.repaint();
+        try {
+            riderAccount=PersonPlanUtil.riderAccountManager.loadRiderAccount(curRider);
+        } catch (BaseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        tblRiderAccountData=new Object[riderAccount.size()][BeanRider.tableTitles.length];
+        for(int i=0;i<riderAccount.size();i++){
+            for(int j=0;j<BeanRiderAccount.tableTitles.length;j++)
+                tblRiderAccountData[i][j]=riderAccount.get(i).getCell(j);
+        }
+        tabRiderAccountModel.setDataVector(tblRiderAccountData,tblRiderAccountTitles);
+        this.dataTableRiderAccount.validate();
+        this.dataTableRiderAccount.repaint();
     }
 
     public FrmRider(){
@@ -89,6 +89,8 @@ public class FrmRider extends JFrame implements ActionListener {
 
         JScrollPane js6=new JScrollPane(this.dataTableRider);
         js6.setPreferredSize(new Dimension(500,10));
+        JScrollPane js7=new JScrollPane(this.dataTableRiderAccount);
+        js7.setPreferredSize(new Dimension(500,10));
 
         //添加骑手列
         this.getContentPane().add(js6, BorderLayout.WEST);
@@ -104,6 +106,7 @@ public class FrmRider extends JFrame implements ActionListener {
             }
 
         });
+        this.getContentPane().add(js7,BorderLayout.CENTER);
 
 
         this.reloadRiderTable();
@@ -139,9 +142,5 @@ public class FrmRider extends JFrame implements ActionListener {
                 return;
             }
         }
-
-
-
-
     }
 }

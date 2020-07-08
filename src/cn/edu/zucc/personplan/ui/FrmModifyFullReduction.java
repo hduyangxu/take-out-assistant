@@ -18,13 +18,9 @@ public class FrmModifyFullReduction extends JDialog implements ActionListener {
     private JButton btnCancel = new JButton("取消");
     private JLabel labelRequest = new JLabel("满减要求：");
     private JLabel labelMoney = new JLabel("满减金额：");
-    private JLabel labelConflict = new JLabel("是否可叠加：");
 
     private JTextField edtRequest = new JTextField(20);
     private JTextField edtMoney = new JTextField(20);
-    private JRadioButton conflict = new JRadioButton("是");
-    private JRadioButton notConflict = new JRadioButton("否");
-    private ButtonGroup isConflict = new ButtonGroup();
 
     public FrmModifyFullReduction(JFrame f, String s, boolean b) {
         super(f, s, b);
@@ -33,17 +29,11 @@ public class FrmModifyFullReduction extends JDialog implements ActionListener {
         toolBar.add(btnCancel);
         this.getContentPane().add(toolBar, BorderLayout.SOUTH);
 
-        isConflict.add(conflict);
-        isConflict.add(notConflict);
-        notConflict.setSelected(true);
         workPane.setLayout(new FlowLayout((FlowLayout.CENTER)));
         workPane.add(labelRequest);
         workPane.add(edtRequest);
         workPane.add(labelMoney);
         workPane.add(edtMoney);
-        workPane.add(labelConflict);
-        workPane.add(conflict);
-        workPane.add(notConflict);
         this.getContentPane().add(workPane, BorderLayout.CENTER);
 
         this.setSize(250, 250);
@@ -67,14 +57,8 @@ public class FrmModifyFullReduction extends JDialog implements ActionListener {
         else if(e.getSource()==this.btnOk){
             float fullReduction_request=Float.parseFloat(this.edtRequest.getText());
             float fullReduction_money=Float.parseFloat(this.edtMoney.getText());
-            String fullReduction_isConflict = null;
-            if(conflict.isSelected()){
-                fullReduction_isConflict = conflict.getText();
-            }else {
-                fullReduction_isConflict = notConflict.getText();
-            }
             try {
-                PersonPlanUtil.fullReductionManager.modifyReduction(fullReduction,fullReduction_request,fullReduction_money,fullReduction_isConflict);
+                PersonPlanUtil.fullReductionManager.modifyReduction(fullReduction,fullReduction_request,fullReduction_money);
                 JOptionPane.showMessageDialog(null, "修改成功", "成功",JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
             } catch (BaseException e1) {

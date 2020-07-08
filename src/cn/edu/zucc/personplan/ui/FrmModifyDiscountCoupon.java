@@ -23,12 +23,15 @@ public class FrmModifyDiscountCoupon extends JDialog implements ActionListener {
     private JLabel labelStartDate = new JLabel("起始日期：");
     private JLabel labelEndDate = new JLabel("结束日期：");
     private JLabel labelRequest = new JLabel("需要订单数");
+    private JLabel labelConflict = new JLabel("是否冲突");
 
     private JTextField edtMoney = new JTextField(20);
     private JTextField edtStartDate = new JTextField(20);
     private JTextField edtEndDate = new JTextField(20);
     private JTextField edtRequest = new JTextField(20);
-
+    private JRadioButton edtIsConflict = new JRadioButton("是");
+    private JRadioButton edtNotConflict = new JRadioButton("否");
+    private ButtonGroup groupConflict = new ButtonGroup();
 
     public FrmModifyDiscountCoupon(JFrame f, String s, boolean b) {
         super(f, s, b);
@@ -46,6 +49,12 @@ public class FrmModifyDiscountCoupon extends JDialog implements ActionListener {
         workPane.add(edtEndDate);
         workPane.add(labelRequest);
         workPane.add(edtRequest);
+        workPane.add(labelConflict);
+        groupConflict.add(edtIsConflict);
+        groupConflict.add(edtNotConflict);
+        edtNotConflict.setSelected(true);
+        workPane.add(edtIsConflict);
+        workPane.add(edtNotConflict);
         this.getContentPane().add(workPane, BorderLayout.CENTER);
 
         this.setSize(250, 300);
@@ -77,8 +86,14 @@ public class FrmModifyDiscountCoupon extends JDialog implements ActionListener {
             }
             float money=Float.parseFloat(this.edtMoney.getText());
             int request=Integer.parseInt(this.edtRequest.getText());
+            String conflict=null;
+            if(edtIsConflict.isSelected()){
+                conflict=edtIsConflict.getText();
+            }else{
+                conflict=edtNotConflict.getText();
+            }
             try {
-                PersonPlanUtil.discountCouponManager.modifyDiscountCoupon(discountCoupon,money,start_date,end_date,request);
+                PersonPlanUtil.discountCouponManager.modifyDiscountCoupon(discountCoupon,money,start_date,end_date,request,conflict);
                 JOptionPane.showMessageDialog(null, "修改成功", "成功",JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
             } catch (BaseException e1) {

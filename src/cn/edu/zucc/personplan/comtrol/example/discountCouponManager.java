@@ -18,18 +18,19 @@ import java.util.List;
 public class discountCouponManager implements IDiscountCouponManager {
     @Override
     public void addDiscountCoupon(BeanMerchant merchant, float money, Date startDate,
-                                  Date endDate, int request) throws BaseException{
+                                  Date endDate, int request, String isConflict) throws BaseException{
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
             String sql="insert into tbl_discountCoupon (merchant_id,discountCoupon_money,discountCoupon_startDate" +
-                    ",discountCoupon_endDate,discountCoupon_request) values (?,?,?,?,?)";
+                    ",discountCoupon_endDate,discountCoupon_request,discountCoupon_isConflict) values (?,?,?,?,?,?)";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
             pst.setFloat(2,money);
             pst.setTimestamp(3,new java.sql.Timestamp(startDate.getTime()));
             pst.setTimestamp(4,new java.sql.Timestamp(endDate.getTime()));
             pst.setInt(5,request);
+            pst.setString(6,isConflict);
             pst.execute();
             pst.close();
         } catch (SQLException e) {
@@ -48,29 +49,19 @@ public class discountCouponManager implements IDiscountCouponManager {
     }
 
     public void modifyDiscountCoupon(BeanDiscountCoupon discountCoupon, float money, Date startDate,
-                                     Date endDate, int request) throws BaseException{
+                                     Date endDate, int request, String isConflict) throws BaseException{
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="update tbl_discountCoupon set discountCoupon_money = ? where discountCoupon_id = ?";
+            String sql="update tbl_discountCoupon set discountCoupon_money = ?,discountCoupon_startDate = ?" +
+                    ",discountCoupon_endDate = ?,discountCoupon_request = ?,discountCoupon_isConflict = ? where discountCoupon_id = ?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
             pst.setFloat(1,money);
-            pst.setInt(2,discountCoupon.getDiscountCoupon_id());
-            pst.execute();
-            sql="update tbl_discountCoupon set discountCoupon_startDate = ? where discountCoupon_id = ?";
-            pst=conn.prepareStatement(sql);
-            pst.setTimestamp(1,new java.sql.Timestamp(startDate.getTime()));
-            pst.setInt(2,discountCoupon.getDiscountCoupon_id());
-            pst.execute();
-            sql="update tbl_discountCoupon set discountCoupon_endDate = ? where discountCoupon_id = ?";
-            pst=conn.prepareStatement(sql);
-            pst.setTimestamp(1,new java.sql.Timestamp(endDate.getTime()));
-            pst.setInt(2,discountCoupon.getDiscountCoupon_id());
-            pst.execute();
-            sql="update tbl_discountCoupon set discountCoupon_request = ? where discountCoupon_id = ?";
-            pst=conn.prepareStatement(sql);
-            pst.setInt(1,request);
-            pst.setInt(2,discountCoupon.getDiscountCoupon_id());
+            pst.setTimestamp(2,new java.sql.Timestamp(startDate.getTime()));
+            pst.setTimestamp(3,new java.sql.Timestamp(endDate.getTime()));
+            pst.setInt(4,request);
+            pst.setString(5,isConflict);
+            pst.setInt(6,discountCoupon.getDiscountCoupon_id());
             pst.execute();
             pst.close();
         } catch (SQLException e) {
@@ -128,6 +119,7 @@ public class discountCouponManager implements IDiscountCouponManager {
                 bdc.setDiscountCoupon_startDate(rs.getTimestamp(4));
                 bdc.setDiscountCoupon_endDate(rs.getTimestamp(5));
                 bdc.setDiscountCoupon_request(rs.getInt(6));
+                bdc.setDiscountCoupon_isConflict(rs.getString(7));
                 result.add(bdc);
             }
             return result;

@@ -111,7 +111,7 @@ public class riderManager implements IRiderManager {
                 BeanRider br=new BeanRider();
                 br.setRider_id(rs.getInt(1));
                 br.setRider_name(rs.getString(2));
-                br.setRider_joinDate(rs.getTimestamp(3));
+                br.setRider_joinDate(rs.getDate(3));
                 br.setRider_identification(rs.getString(4));
                 result.add(br);
             }

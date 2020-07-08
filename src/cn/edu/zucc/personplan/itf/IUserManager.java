@@ -13,6 +13,9 @@ public interface IUserManager {
     //用户登录
 	public BeanUser login(String userid,String pwd)throws BaseException;
 
+	//修改姓名
+	public void changeName(BeanUser user, String name)throws BaseException;
+
     //修改密码
 	public void changePwd(BeanUser user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
 

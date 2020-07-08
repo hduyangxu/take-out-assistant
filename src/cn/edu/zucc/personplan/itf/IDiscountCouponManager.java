@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface IDiscountCouponManager {
     public void addDiscountCoupon(BeanMerchant merchant, float money, Date startDate,
-            Date endDate, int request) throws BaseException;
+            Date endDate, int request, String isConflict) throws BaseException;
 
     public void modifyDiscountCoupon(BeanDiscountCoupon discountCoupon, float money, Date startDate,
-            Date endDate, int request) throws BaseException;
+            Date endDate, int request, String isConflict) throws BaseException;
 
     public void deleteDiscountCoupon(BeanDiscountCoupon discountCoupon) throws BaseException;
 
