@@ -416,7 +416,8 @@ public class FrmSys extends JFrame implements ActionListener {
             try {
                 PersonPlanUtil.fullReductionManager.deleteFullReduction(this.fullReduction.get(i));
                 JOptionPane.showMessageDialog(null, "删除成功", "成功", JOptionPane.INFORMATION_MESSAGE);
-                FrmSys.this.reloadFullReduction(i);
+                int j=FrmSys.this.dataTableMerchant.getSelectedRow();
+                FrmSys.this.reloadFullReduction(j);
             } catch (BaseException e1) {
                 JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -430,7 +431,8 @@ public class FrmSys extends JFrame implements ActionListener {
             FrmModifyFullReduction dlg = new FrmModifyFullReduction(this, "修改满减信息", true);
             dlg.fullReduction = fullReduction.get(i);
             dlg.setVisible(true);
-            reloadFullReduction(i);
+            int j=FrmSys.this.dataTableMerchant.getSelectedRow();
+            reloadFullReduction(j);
         }else if (e.getSource() == this.menuItem_addDiscountCoupon) {
             if (this.curMerchant == null) {
                 JOptionPane.showMessageDialog(null, "请选择商家", "错误", JOptionPane.ERROR_MESSAGE);
@@ -450,7 +452,8 @@ public class FrmSys extends JFrame implements ActionListener {
             try {
                 PersonPlanUtil.discountCouponManager.deleteDiscountCoupon(this.discountCoupon.get(i));
                 JOptionPane.showMessageDialog(null, "删除成功", "成功", JOptionPane.INFORMATION_MESSAGE);
-                FrmSys.this.reloadDiscountCoupon(i);
+                int j=FrmSys.this.dataTableMerchant.getSelectedRow();
+                FrmSys.this.reloadDiscountCoupon(j);
             } catch (BaseException e1) {
                 JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -464,7 +467,8 @@ public class FrmSys extends JFrame implements ActionListener {
             FrmModifyDiscountCoupon dlg = new FrmModifyDiscountCoupon(this, "修改优惠信息", true);
             dlg.discountCoupon = discountCoupon.get(i);
             dlg.setVisible(true);
-            reloadDiscountCoupon(i);
+            int j=FrmSys.this.dataTableMerchant.getSelectedRow();
+            reloadDiscountCoupon(j);
         }else if(e.getSource()==this.menuItem_rider){
             FrmRider frameRider = new FrmRider();
             frameRider.setVisible(true);

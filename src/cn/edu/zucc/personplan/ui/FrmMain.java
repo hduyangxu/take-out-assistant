@@ -25,27 +25,12 @@ import javax.swing.table.DefaultTableModel;
 public class FrmMain extends JFrame implements ActionListener {
 	public static int userType = 0;
 	private static final long serialVersionUID = 1L;
-
-
-	public FrmLogin dlgLogin=null;
-
-
+	FrmLogin frameLogin= null;
 
 
 	public FrmMain(){
-		
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
-		this.setTitle("饱了么外卖平台");
-		dlgLogin=new FrmLogin(this,"饱了么登录窗口",true);
-		dlgLogin.setVisible(true);
-		if(userType == 1) {  //用户平台
-			FrmUser frameUser = new FrmUser();
-			frameUser.setVisible(true);
-		}else if(userType == 2){  //管理员平台
-			FrmSys frameSys = new FrmSys();
-			frameSys.setVisible(true);
-		}
-
+		frameLogin=new FrmLogin(null,"饱了么登录窗口",true);
+		frameLogin.setVisible(true);
 
 	}
 

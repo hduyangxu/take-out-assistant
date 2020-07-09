@@ -13,4 +13,6 @@ public class PersonPlanUtil {
 	public static IRiderManager riderManager=new riderManager();
 	public static IRiderAccountManager riderAccountManager=new riderAccountManager();
 	public static IAddressManager addressManager=new addressManager();
+	public static IShoppingCartManager shoppingCartManager=new shoppingCartManager();
+	public static IUserDiscountCouponManager userDiscountCouponManager=new userDiscountCouponManager();
 }

@@ -83,22 +83,21 @@ public class FrmLogin extends JDialog implements ActionListener {
 			String password = new String(this.edtPwd.getPassword());
 			try {
 				BeanUser.currentLoginUser= PersonPlanUtil.userManager.login(user_name, password);
+				FrmUser frameUser = new FrmUser();
+				frameUser.setVisible(true);
+				this.setVisible(false);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "登录失败",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			FrmMain.userType = 1;
-			this.setVisible(false);
-
 		} else if(e.getSource()==this.btnRegister){
-			FrmRegister dlg=new FrmRegister(this,"饱了么注册",true);
-			dlg.setVisible(true);
+			FrmRegister frameRegister=new FrmRegister(this,"饱了么注册",true);
+			frameRegister.setVisible(true);
 		}else if(e.getSource()==this.btnSysLogin){
-				FrmSysLogin dlg1 = new FrmSysLogin(null,"管理员登陆",true);
-				dlg1.setVisible(true);
-			    this.setVisible(false);
+				FrmSysLogin frameSys = new FrmSysLogin(null,"管理员登陆",true);
+				frameSys.fatherJf=this;
+				frameSys.setVisible(true);
 		}
-
 	}
 
 }

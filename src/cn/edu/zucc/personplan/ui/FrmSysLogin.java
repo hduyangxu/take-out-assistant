@@ -3,6 +3,7 @@ package cn.edu.zucc.personplan.ui;
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
+import cn.edu.zucc.personplan.ui.FrmMain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ import java.awt.event.WindowEvent;
 import static cn.edu.zucc.personplan.ui.FrmMain.userType;
 
 public class FrmSysLogin extends JDialog implements ActionListener {
+       public FrmLogin fatherJf = null;
        private JPanel toolBar = new JPanel();
        private JPanel workPane = new JPanel();
        private JPanel imagePane = new JPanel();
@@ -24,7 +26,7 @@ public class FrmSysLogin extends JDialog implements ActionListener {
        private JTextField edtUserSysName = new JTextField(20);
        private JPasswordField edtSysPwd = new JPasswordField(20);
 
-       public FrmSysLogin(Dialog f, String s, boolean b) {
+       public FrmSysLogin(Frame f, String s, boolean b) {
            super(f, s, b);
            toolBar.add(this.btnOk);
            toolBar.add(btnCancel);
@@ -50,30 +52,28 @@ public class FrmSysLogin extends JDialog implements ActionListener {
            this.setResizable(false);
            this.btnCancel.addActionListener(this);
            this.btnOk.addActionListener(this);
-           this.addWindowListener(new WindowAdapter() {
-               public void windowClosing(WindowEvent e) {
-                   System.exit(0);
-               }
-           });
+           this.setDefaultCloseOperation(HIDE_ON_CLOSE);
        }
 
        @Override
        public void actionPerformed(ActionEvent e) {
            if (e.getSource() == this.btnCancel) {
                System.exit(0);
+               this.setVisible(false);
            }
            else if (e.getSource() == this.btnOk) {
                String sysUserName = this.edtUserSysName.getText();
                String sysUserPassword = new String(this.edtSysPwd.getPassword());
                try {
                    PersonPlanUtil.userManager.systemUserLogin(sysUserName, sysUserPassword);
-                   userType = 2;
+                   FrmSys frameSys = new FrmSys();
+                   frameSys.setVisible(true);
+                   this.setVisible(false);
+                   fatherJf.setVisible(false);
                } catch (BaseException e1) {
                    JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
                    return;
                }
-               FrmMain.userType = 2;
-               this.setVisible(false);
            }
 
 
