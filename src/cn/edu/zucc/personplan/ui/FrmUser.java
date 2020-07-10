@@ -72,16 +72,17 @@ public class FrmUser extends JFrame implements ActionListener {
     DefaultTableModel tabShoppingCartModel=new DefaultTableModel();
     private JTable dataTableShoppingCart=new JTable(tabShoppingCartModel);
 
-    private BeanMerchant curMerchant=null;
+    public static BeanMerchant curMerchant=null;
     private BeanProductType curProductType=null;
 
     List<BeanMerchant> allMerchant=null;
     List<BeanProductType> productType=null;
     List<BeanProductDetails> productDetails=null;
-    List<BeanFullReduction> fullReduction=null;
+    public static List<BeanFullReduction> fullReduction=null;
     List<BeanDiscountCoupon> discountCoupon=null;
-    List<BeanAddress> address=null;
-    List<BeanOrderDetail> orderDetail=null;
+    public static List<BeanAddress> address=null;
+    public static List<BeanOrderDetail> orderDetail=null;
+
 
     private void reloadMerchantTable(){//重新载入商家信息
         try {
@@ -393,14 +394,12 @@ public class FrmUser extends JFrame implements ActionListener {
             FrmShowDiscountCoupon frameShowDiscountCoupon = new FrmShowDiscountCoupon();
             frameShowDiscountCoupon.setVisible(true);
         }else if(e.getSource() == this.menuItem_confirmOrder){
-            FrmConfirm frameConfirm = new FrmConfirm(this,"确认订单",true);
-            int j = FrmUser.this.dataTableMerchant.getSelectedRow();
-            frameConfirm.merchant=allMerchant.get(j);
-            try {
-                frameConfirm.shoppingCart=PersonPlanUtil.shoppingCartManager.loadShoppingCart(allMerchant.get(j));
-            } catch (BaseException baseException) {
-                baseException.printStackTrace();
+            if(curMerchant==null){
+                JOptionPane.showMessageDialog(null, "请选择商家", "错误",JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            FrmConfirm frameConfirm = new FrmConfirm(null,"订单确认",true);
             frameConfirm.setVisible(true);
         }
     }

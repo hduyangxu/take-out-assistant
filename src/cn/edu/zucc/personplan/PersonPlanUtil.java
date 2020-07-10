@@ -15,4 +15,5 @@ public class PersonPlanUtil {
 	public static IAddressManager addressManager=new addressManager();
 	public static IShoppingCartManager shoppingCartManager=new shoppingCartManager();
 	public static IUserDiscountCouponManager userDiscountCouponManager=new userDiscountCouponManager();
+	public static IOrderManager orderManager=new orderManager();
 }
