@@ -73,7 +73,7 @@ public class FrmConfirm extends JDialog implements ActionListener {
                 }
             }
             if(fullReductionRequest<0){
-                edtFullReduction.setText("无");
+                edtFullReduction.setText("----无----");
             }else{
                 edtFullReduction.setText("满"+fullReductionRequest+"减"+fullReductionMoney);
                 sumDiscount=fullReductionMoney;
@@ -190,8 +190,13 @@ public class FrmConfirm extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(null, "必须选择地址", "错误",JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if(sumPrice==0){
+                JOptionPane.showMessageDialog(null, "购物车为空", "错误",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             FrmFinalConfirm frameFinalConfirm = new FrmFinalConfirm(null,"最终确认",true);
             frameFinalConfirm.setVisible(true);
+            this.setVisible(false);
         }
     }
 

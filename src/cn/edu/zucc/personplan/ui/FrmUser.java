@@ -394,15 +394,20 @@ public class FrmUser extends JFrame implements ActionListener {
             FrmShowDiscountCoupon frameShowDiscountCoupon = new FrmShowDiscountCoupon();
             frameShowDiscountCoupon.setVisible(true);
         }else if(e.getSource() == this.menuItem_confirmOrder){
-            if(curMerchant==null){
+            int i = FrmUser.this.dataTableMerchant.getSelectedRow();
+            if(i<0){
                 JOptionPane.showMessageDialog(null, "请选择商家", "错误",JOptionPane.ERROR_MESSAGE);
                 return;
             }
             FrmConfirm frameConfirm = new FrmConfirm(null,"订单确认",true);
             frameConfirm.setVisible(true);
+            FrmUser.this.reloadShoppingCartTable(i);
         }else if(e.getSource()==this.menuItem_vipInfo){
             FrmVIPDetails frameVipInfo=new FrmVIPDetails(this,"会员信息",true);
             frameVipInfo.setVisible(true);
+        }else if(e.getSource()==this.menuItem_discountCouponRequest){
+            FrmShowDiscountCouponRequest frameShowDiscountCouponRequest=new FrmShowDiscountCouponRequest();
+            frameShowDiscountCouponRequest.setVisible(true);
         }
     }
 }

@@ -101,7 +101,10 @@ public class shoppingCartManager implements IShoppingCartManager {
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select * from tbl_orderDetail where merchant_id = ? and order_id=(select max(order_id)+1 from tbl_productOrder) and user_id = ?";
+            String sql = "select * from tbl_orderDetail " +
+                    "where merchant_id = ? " +
+                    "and (order_id=(select max(order_id)+1 from tbl_productOrder) or (order_id=1 and (select max(order_id) from tbl_productOrder) is null)) " +
+                    "and user_id = ?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
             pst.setInt(2, BeanUser.currentLoginUser.getUser_id());
