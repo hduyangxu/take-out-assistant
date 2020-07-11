@@ -59,7 +59,8 @@ public class FrmConfirm extends JDialog implements ActionListener {
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select fullReduction_request,fullReduction_Money,fullReduction_id from tbl_fullReduction where merchant_id = ? group by fullReduction_request DESC";
+            String sql = "select fullReduction_request,fullReduction_Money,fullReduction_id " +
+                    "from tbl_fullReduction where merchant_id = ? group by fullReduction_request DESC";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
             java.sql.ResultSet rs= pst.executeQuery();
@@ -96,7 +97,7 @@ public class FrmConfirm extends JDialog implements ActionListener {
 
 
     private void acquireAddress() throws DbException {//获取优惠券信息
-        edtAddress.addItem("---请选择地址—--");
+        edtAddress.addItem("---请选择地址---");
         for(int i=0;i<address.size();i++){
             BeanAddress curAddress=address.get(i);
             address_id.add(curAddress.getAddress_id());

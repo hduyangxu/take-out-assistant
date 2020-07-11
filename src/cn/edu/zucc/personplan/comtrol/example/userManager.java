@@ -63,8 +63,17 @@ public class userManager implements IUserManager {
 		Connection conn=null;
 		try {
 			conn= DBUtil2.getConnection();
-			String sql="select user_name,user_password,user_id from tbl_user where user_name=?";
+			String sql="update tbl_user set user_isVIP=-1 where now()>user_vipEndDate";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.execute();
+			sql="update tbl_user set user_isVIP=0 where user_vipEndDate is null";
+			pst=conn.prepareStatement(sql);
+			pst.execute();
+			sql="update tbl_user set user_isVIP=1 where user_vipEndDate>now()";
+			pst=conn.prepareStatement(sql);
+			pst.execute();
+			sql="select user_name,user_password,user_id,user_isVIP,user_vipEndDate from tbl_user where user_name=?";
+			pst=conn.prepareStatement(sql);
 			pst.setString(1,userName);
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(!rs.next()) throw new BusinessException("用户名不存在");
@@ -72,6 +81,8 @@ public class userManager implements IUserManager {
 			BeanUser u=new BeanUser();
 			u.setUser_name(rs.getString(1));
 			u.setUser_id(rs.getInt(3));
+			u.setUser_isVIP(rs.getInt(4));
+			u.setUser_vipEndDate(rs.getTimestamp(5));
 			rs.close();
 			pst.close();
 			return u;
@@ -171,6 +182,41 @@ public class userManager implements IUserManager {
 			if(!rs.getString(1).equals(systemUserPassword)) throw new BusinessException("密码错误");
 			rs.close();
 			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+
+	public void vipManager()throws BaseException{
+		Connection conn=null;
+		try {
+			conn=DBUtil2.getConnection();
+			String sql=null;
+			if(BeanUser.currentLoginUser.getUser_isVIP()==0||BeanUser.currentLoginUser.getUser_isVIP()==-1){
+				sql="update tbl_user set user_isVIP=1,user_vipEndDate=date_add(now(),interval 1 month) where user_id="+BeanUser.currentLoginUser.getUser_id();
+			}else if(BeanUser.currentLoginUser.getUser_isVIP()==1){
+				sql="update tbl_user set user_vipEndDate=date_add(user_vipEndDate,interval 1 month) where user_id="+BeanUser.currentLoginUser.getUser_id();
+			}
+			java.sql.Statement st = conn.createStatement();
+			st.execute(sql);
+			sql="select user_isVIP,user_vipEndDate from tbl_user where user_id="+BeanUser.currentLoginUser.getUser_id();
+			java.sql.ResultSet rs =st.executeQuery(sql);
+			if(rs.next()){
+				BeanUser.currentLoginUser.setUser_isVIP(rs.getInt(1));
+				BeanUser.currentLoginUser.setUser_vipEndDate(rs.getTimestamp(2));
+			}
+			rs.close();
+			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DbException(e);

@@ -21,4 +21,7 @@ public interface IUserManager {
 
 	//系统用户登录
 	public void systemUserLogin(String systemUserName,String systemUserPassword)throws BaseException;
+
+	//vip管理
+	public void vipManager()throws BaseException;
 }

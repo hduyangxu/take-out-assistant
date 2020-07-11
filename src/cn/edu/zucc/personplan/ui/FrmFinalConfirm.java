@@ -1,7 +1,9 @@
 package cn.edu.zucc.personplan.ui;
 
+import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanMerchant;
 import cn.edu.zucc.personplan.model.BeanUser;
+import cn.edu.zucc.personplan.util.BaseException;
 import cn.edu.zucc.personplan.util.DBUtil2;
 import cn.edu.zucc.personplan.util.DbException;
 
@@ -163,6 +165,16 @@ public class FrmFinalConfirm extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==this.btnCancel){
             this.setVisible(false);
+        }else if(e.getSource()==this.btnOk){
+            try {
+                PersonPlanUtil.orderManager.addOrder(merchant,finalAddress,finalDiscountCouponId,
+                        finalFullReductionId,FrmConfirm.sumPrice,finalPrice-finalDiscount-curDiscount);
+                JOptionPane.showMessageDialog(null, "下单成功", "成功",JOptionPane.INFORMATION_MESSAGE);
+                this.setVisible(false);
+            } catch (BaseException e1) {
+                JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
     }
 }

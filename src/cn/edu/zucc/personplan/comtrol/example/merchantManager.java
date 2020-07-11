@@ -55,7 +55,7 @@ public class merchantManager implements IMerchantManager{
             sql="update tbl_merchant set merchant_starRated=? where merchant_id=?";
             pst=conn.prepareStatement(sql);
             pst.setInt(1, Integer.parseInt(starRated));
-            pst.setInt(2,curMerchant.getMerchant_id());
+            pst.setInt(2, curMerchant.getMerchant_id());
             pst.execute();
             pst.close();
         } catch (SQLException e) {

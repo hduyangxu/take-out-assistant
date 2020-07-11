@@ -398,9 +398,11 @@ public class FrmUser extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "请选择商家", "错误",JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
             FrmConfirm frameConfirm = new FrmConfirm(null,"订单确认",true);
             frameConfirm.setVisible(true);
+        }else if(e.getSource()==this.menuItem_vipInfo){
+            FrmVIPDetails frameVipInfo=new FrmVIPDetails(this,"会员信息",true);
+            frameVipInfo.setVisible(true);
         }
     }
 }
