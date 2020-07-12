@@ -2,9 +2,7 @@ package cn.edu.zucc.personplan.comtrol.example;
 
 import cn.edu.zucc.personplan.itf.IProductDetailsManager;
 import cn.edu.zucc.personplan.itf.IProductTypeManager;
-import cn.edu.zucc.personplan.model.BeanMerchant;
-import cn.edu.zucc.personplan.model.BeanProductDetails;
-import cn.edu.zucc.personplan.model.BeanProductType;
+import cn.edu.zucc.personplan.model.*;
 import cn.edu.zucc.personplan.util.BaseException;
 import cn.edu.zucc.personplan.util.BusinessException;
 import cn.edu.zucc.personplan.util.DBUtil2;
@@ -156,5 +154,82 @@ public class productDetailsManager implements IProductDetailsManager {
                     e.printStackTrace();
                 }
         }
+    }
+
+    public void evaluateProduct(BeanProductEvaluate productEvaluate, String evaluateContent, int evaluateStarRated) throws  BaseException{
+        Connection conn = null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql = "update tbl_productEvaluate set evaluate_content=?,evaluate_date=now(),evaluate_starRated=? where product_id = ? and user_id = ?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,evaluateContent);
+            pst.setInt(2,evaluateStarRated);
+            pst.setInt(3,productEvaluate.getProduct_id());
+            pst.setInt(4,productEvaluate.getUser_id());
+            pst.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    public List<BeanProductEvaluate> loadProductEvaluate() throws BaseException{
+        List<BeanProductEvaluate> result=new ArrayList<BeanProductEvaluate>();
+        Connection conn = null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql = "select DISTINCT product_id,a.merchant_id from tbl_productorder a, tbl_orderdetail b " +
+                    "where a.user_id = ? and order_state='已完成' and a.order_id=b.order_id " +
+                    "and product_id not in(select product_id from tbl_productevaluate where user_id = ?) ";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, BeanUser.currentLoginUser.getUser_id());
+            pst.setInt(2, BeanUser.currentLoginUser.getUser_id());
+            java.sql.ResultSet rs= pst.executeQuery();
+            while(rs.next()){
+                sql="insert into tbl_productevaluate(product_id,merchant_id,user_id) values (?,?,?)";
+                pst=conn.prepareStatement(sql);
+                pst.setInt(1,rs.getInt(1));
+                pst.setInt(2,rs.getInt(2));
+                pst.setInt(3,BeanUser.currentLoginUser.getUser_id());
+                pst.execute();
+            }
+            sql="select * from tbl_productEvaluate where user_id = ? group by product_id";
+            pst=conn.prepareStatement(sql);
+            pst.setInt(1,BeanUser.currentLoginUser.getUser_id());
+            rs=pst.executeQuery();
+            while(rs.next()){
+                BeanProductEvaluate bpe = new BeanProductEvaluate();
+                bpe.setProduct_id(rs.getInt(1));
+                bpe.setMerchant_id(rs.getInt(2));
+                bpe.setUser_id(rs.getInt(3));
+                bpe.setEvaluate_content(rs.getString(4));
+                bpe.setEvaluate_date(rs.getTimestamp(5));
+                bpe.setEvaluate_starRated(rs.getInt(6));
+                result.add(bpe);
+            }
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+
     }
 }

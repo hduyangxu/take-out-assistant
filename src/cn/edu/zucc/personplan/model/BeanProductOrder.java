@@ -1,8 +1,17 @@
 package cn.edu.zucc.personplan.model;
 
+import cn.edu.zucc.personplan.util.DBUtil2;
+import cn.edu.zucc.personplan.util.DbException;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 
+
+
+
 public class BeanProductOrder {
+    private int order_order;
     private int order_id;
     private int address_id;
     private int merchant_id;
@@ -12,6 +21,145 @@ public class BeanProductOrder {
     private float originalPrice;
     private float finalPrice;
     private Date order_startDate;
+    private Date order_requestDate;
+    private Date order_realDate;
+    private int order_addressId;
+    private String order_state;
+    public static final String[] tableTitles={"序号","地址","商家名","骑手名","优惠券信息","满减信息","原价","最终价","下单时间","预计送达时间","实际送达时间","订单状态"};
+
+    public String getAddress(int addressId){
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="select address_detail from tbl_address where address_id=" + addressId;
+            java.sql.Statement st=conn.createStatement();
+            java.sql.ResultSet rs = st.executeQuery(sql);
+            if(rs.next())  return rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return "";
+    }
+    public String getMerchant(int merchantId){
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="select merchant_name from tbl_merchant where merchant_id=" + merchantId;
+            java.sql.Statement st=conn.createStatement();
+            java.sql.ResultSet rs = st.executeQuery(sql);
+            if(rs.next())  return rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return "";
+    }
+    public String getDiscountCoupon(int discountCouponId){
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="select discountCoupon_money from tbl_discountCoupon where discountCoupon_id=" + discountCouponId;
+            java.sql.Statement st=conn.createStatement();
+            java.sql.ResultSet rs=st.executeQuery(sql);
+            if(rs.next())  return String.valueOf(rs.getFloat(1));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return "无";
+    }
+    public String getRider(int riderId){
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="select rider_name from tbl_rider where rider_id=" + riderId;
+            java.sql.Statement st=conn.createStatement();
+            java.sql.ResultSet rs=st.executeQuery(sql);
+            if(rs.next())  return rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return "无";
+    }
+    public String getFullReduction(int fullReduction_id){
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="select fullReduction_request,fullReduction_money from tbl_fullReduction where fullReduction_id=" + fullReduction_id;
+            java.sql.Statement st=conn.createStatement();
+            java.sql.ResultSet rs=st.executeQuery(sql);
+            if(rs.next())  return "满" +rs.getString(1)+"减"+rs.getString(2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return "无";
+    }
+    public String getCell(int col){
+        if(col==0) return String.valueOf(this.order_order);
+        else if(col==1) return getAddress(this.address_id);
+        else if(col==2) return getMerchant(this.merchant_id);
+        else if(col==3) return getRider(this.rider_id);
+        else if(col==4) return getDiscountCoupon(this.discountCoupon_id);
+        else if(col==5) return getFullReduction(this.fullReduction_id);
+        else if(col==6) return String.valueOf(this.originalPrice);
+        else if(col==7) return String.valueOf(this.finalPrice);
+        else if(col==8) return String.valueOf(this.order_startDate);
+        else if(col==9) return String.valueOf(this.order_requestDate);
+        else if(col==10) return String.valueOf(this.order_realDate);
+        else if(col==11) return String.valueOf(this.order_state);
+        else return "";
+    }
+
+    public int getOrder_order() {
+        return order_order;
+    }
+
+    public void setOrder_order(int order_order) {
+        this.order_order = order_order;
+    }
 
     public int getOrder_id() {
         return order_id;
@@ -117,8 +265,5 @@ public class BeanProductOrder {
         this.order_state = order_state;
     }
 
-    private Date order_requestDate;
-    private Date order_realDate;
-    private int order_addressId;
-    private String order_state;
+
 }

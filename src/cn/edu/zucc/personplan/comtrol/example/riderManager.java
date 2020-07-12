@@ -104,9 +104,24 @@ public class riderManager implements IRiderManager {
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select * from tbl_rider";
+            String sql="select rider_id,count(*) from tbl_productOrder group by rider_id";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            java.sql.ResultSet rs= pst.executeQuery();
+            java.sql.ResultSet rs=pst.executeQuery();
+            while(rs.next()){
+                String identification="新人";
+                if(rs.getInt(2)>=500)
+                    identification="正式员工";
+                else if(rs.getInt(2)>=1000)
+                    identification="单王";
+                sql="update tbl_rider set rider_identification = ? where rider_id = ?";
+                pst=conn.prepareStatement(sql);
+                pst.setString(1,identification);
+                pst.setInt(2,rs.getInt(1));
+                pst.execute();
+            }
+            sql = "select * from tbl_rider";
+            pst = conn.prepareStatement(sql);
+            rs= pst.executeQuery();
             while(rs.next()){
                 BeanRider br=new BeanRider();
                 br.setRider_id(rs.getInt(1));

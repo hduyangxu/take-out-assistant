@@ -1,30 +1,31 @@
 package cn.edu.zucc.personplan.model;
 
+import java.util.Date;
+
 public class BeanRiderAccount {
     private int account_id;
+    private Date finish_date;
     private int account_order;
     private int rider_id;
     private int order_id;
     private String order_userEvaluate;
     private float unitPrice;
-    private int yearMonth;
-    public static final String[] tableTitles={"订单编号","订单时间","当月序号","用户评价","收入"};
+    public static final String[] tableTitles={"当月序号","订单时间","用户评价","收入"};
 
     public String getCell(int col){
-        if(col==0) return String.valueOf(this.order_id);
-        else if(col==1) return String.valueOf(this.yearMonth);
-        else if(col==2) return String.valueOf(this.account_order);
-        else if(col==3) return this.order_userEvaluate;
-        else if(col==4) return String.valueOf(this.unitPrice);
+        if(col==0) return String.valueOf(this.account_order);
+        else if(col==1) return String.valueOf(this.finish_date);
+        else if(col==2) return this.order_userEvaluate;
+        else if(col==3) return String.valueOf(this.unitPrice);
         else return "";
     }
 
-    public int getYearMonth() {
-        return yearMonth;
+    public Date getFinish_date() {
+        return finish_date;
     }
 
-    public void setYearMonth(int yearMonth) {
-        this.yearMonth = yearMonth;
+    public void setFinish_date(Date finish_date) {
+        this.finish_date = finish_date;
     }
 
     public int getAccount_order() {

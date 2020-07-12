@@ -76,7 +76,7 @@ public class FrmRider extends JFrame implements ActionListener {
 
     public FrmRider(){
         this.setExtendedState(Frame.MAXIMIZED_BOTH);
-        this.setTitle("饱了么外卖管理平台");
+        this.setTitle("饱了么骑手管理");
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         this.button_addRider.addActionListener(this);

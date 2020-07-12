@@ -53,7 +53,6 @@ public class FrmShowDiscountCouponRequest extends JFrame {
         this.setLocation((int) (width - this.getWidth()) / 2,
                 (int) (height - this.getHeight()) / 2);
         this.validate();
-        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
         this.reloadDiscountCouponRequest();
     }
 }

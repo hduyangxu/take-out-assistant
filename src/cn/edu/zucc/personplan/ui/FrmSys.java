@@ -472,6 +472,9 @@ public class FrmSys extends JFrame implements ActionListener {
         }else if(e.getSource()==this.menuItem_rider){
             FrmRider frameRider = new FrmRider();
             frameRider.setVisible(true);
+        }else if(e.getSource()==this.menuItem_order){
+            FrmSysOrder frameOrder = new FrmSysOrder();
+            frameOrder.setVisible(true);
         }
     }
 }

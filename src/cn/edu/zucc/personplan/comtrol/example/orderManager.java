@@ -1,15 +1,18 @@
 package cn.edu.zucc.personplan.comtrol.example;
 
 import cn.edu.zucc.personplan.itf.IOrderManager;
-import cn.edu.zucc.personplan.model.BeanMerchant;
-import cn.edu.zucc.personplan.model.BeanUser;
+import cn.edu.zucc.personplan.model.*;
+import cn.edu.zucc.personplan.model.BeanProductOrder;
 import cn.edu.zucc.personplan.util.BaseException;
+import cn.edu.zucc.personplan.util.BusinessException;
 import cn.edu.zucc.personplan.util.DBUtil2;
 import cn.edu.zucc.personplan.util.DbException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class orderManager implements IOrderManager {
     public void addOrder(BeanMerchant merchant, int addressId, int discountCouponId, int fullReductionId, float sumPrice,
@@ -144,4 +147,177 @@ public class orderManager implements IOrderManager {
                 }
         }
     }
+
+    public void confirmArrive(BeanProductOrder productOrder) throws BaseException{
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="update tbl_productorder set order_realDate = now(), order_state='已完成' where order_id = ?";
+            java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,productOrder.getOrder_id());
+            pst.execute();
+            pst.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    public void distributeRider(BeanAllProductOrder productOrder, BeanRider rider) throws BaseException{
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="update tbl_productorder set rider_id=?,order_state='已送出' where order_id = ?";
+            java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,rider.getRider_id());
+            pst.setInt(2,productOrder.getOrder_id());
+            pst.execute();
+            pst.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+
+    }
+
+    public List<BeanProductOrder> loadProductOrder() throws BaseException{
+        List<BeanProductOrder> result=new ArrayList<BeanProductOrder>();
+        Connection conn = null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql = "select * from tbl_ProductOrder where user_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,BeanUser.currentLoginUser.getUser_id());
+            java.sql.ResultSet rs= pst.executeQuery();
+            int cnt=1;
+            while(rs.next()){
+                BeanProductOrder bpo = new BeanProductOrder();
+                bpo.setOrder_id(rs.getInt(1));
+                bpo.setOrder_order(cnt++);
+                bpo.setAddress_id(rs.getInt(2));
+                bpo.setMerchant_id(rs.getInt(3));
+                bpo.setRider_id(rs.getInt(4));
+                bpo.setDiscountCoupon_id(rs.getInt(5));
+                bpo.setFullReduction_id(rs.getInt(6));
+                bpo.setOriginalPrice(rs.getFloat(7));
+                bpo.setFinalPrice(rs.getFloat(8));
+                bpo.setOrder_startDate(rs.getTimestamp(9));
+                bpo.setOrder_requestDate(rs.getTimestamp(10));
+                bpo.setOrder_realDate(rs.getTimestamp(11));
+                bpo.setOrder_state(rs.getString(12));
+                result.add(bpo);
+            }
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+    public List<BeanAllProductOrder> loadAllProductOrder() throws BaseException{
+        List<BeanAllProductOrder> result=new ArrayList<BeanAllProductOrder>();
+        Connection conn = null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql = "select * from tbl_ProductOrder";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            java.sql.ResultSet rs= pst.executeQuery();
+            while(rs.next()){
+                BeanAllProductOrder bapo = new BeanAllProductOrder();
+                bapo.setOrder_id(rs.getInt(1));
+                bapo.setAddress_id(rs.getInt(2));
+                bapo.setMerchant_id(rs.getInt(3));
+                bapo.setRider_id(rs.getInt(4));
+                bapo.setDiscountCoupon_id(rs.getInt(5));
+                bapo.setFullReduction_id(rs.getInt(6));
+                bapo.setOriginalPrice(rs.getFloat(7));
+                bapo.setFinalPrice(rs.getFloat(8));
+                bapo.setOrder_startDate(rs.getTimestamp(9));
+                bapo.setOrder_requestDate(rs.getTimestamp(10));
+                bapo.setOrder_realDate(rs.getTimestamp(11));
+                bapo.setOrder_state(rs.getString(12));
+                bapo.setUser_id(rs.getInt(13));
+                result.add(bapo);
+            }
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    public List<BeanOrderDetail> loadOrderDetails(BeanProductOrder productOrder) throws BaseException{
+        List<BeanOrderDetail> result=new ArrayList<BeanOrderDetail>();
+        Connection conn = null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql = "select * from tbl_orderDetail where order_id = ? and user_id = ?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,productOrder.getOrder_id());
+            pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
+            java.sql.ResultSet rs= pst.executeQuery();
+            while(rs.next()){
+                BeanOrderDetail bod = new BeanOrderDetail();
+                bod.setProduct_id(rs.getInt(1));
+                bod.setProduct_name(rs.getString(2));
+                bod.setMerchant_id(rs.getInt(3));
+                bod.setOrder_id(rs.getInt(4));
+                bod.setProduct_quantity(rs.getInt(5));
+                bod.setProduct_sumPrice(rs.getFloat(6));
+                bod.setProduct_discountPrice(rs.getFloat(7));
+                result.add(bod);
+            }
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+
+    }
+
 }
+

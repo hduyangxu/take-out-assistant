@@ -138,6 +138,7 @@ public class FrmConfirm extends JDialog implements ActionListener {
                         isUser="是";
                         edtFullReduction.setText("--不使用满减--");
                         sumDiscount=0;
+                        fullReductionId=0;
                     }else{
                         isUser="否";
                         try {

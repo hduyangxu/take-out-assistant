@@ -122,9 +122,23 @@ public class merchantManager implements IMerchantManager{
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select * from tbl_merchant";
+            String sql = "select a.merchant_id, avg(finalPrice), count(*) " +
+                    "from tbl_productorder a, tbl_merchant b " +
+                    "where a.merchant_id=b.merchant_id " +
+                    "GROUP BY a.merchant_id";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            java.sql.ResultSet rs= pst.executeQuery();
+            java.sql.ResultSet rs=pst.executeQuery();
+            while (rs.next()){
+                sql="update tbl_merchant set merchant_avgConsumption=?,merchant_totalsales=? where merchant_id = ?";
+                pst=conn.prepareStatement(sql);
+                pst.setFloat(1,rs.getFloat(2));
+                pst.setInt(2,rs.getInt(3));
+                pst.setInt(3,rs.getInt(1));
+                pst.execute();
+            }
+            sql = "select * from tbl_merchant";
+            pst = conn.prepareStatement(sql);
+            rs=pst.executeQuery();
             while(rs.next()){
               BeanMerchant bm = new BeanMerchant();
               bm.setMerchant_id(rs.getInt(1));

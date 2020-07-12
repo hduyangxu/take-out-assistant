@@ -54,7 +54,7 @@ public class userDiscountCouponManager implements IUserDiscountCouponManager {
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select * from tbl_DiscountCouponRequest where user_id = ? group by merchant_id";
+            String sql = "select * from tbl_DiscountCouponRequest where user_id = ?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,user.getUser_id());
             java.sql.ResultSet rs= pst.executeQuery();

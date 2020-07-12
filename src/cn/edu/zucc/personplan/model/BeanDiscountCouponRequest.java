@@ -1,5 +1,10 @@
 package cn.edu.zucc.personplan.model;
 
+import cn.edu.zucc.personplan.util.DBUtil2;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class BeanDiscountCouponRequest {
     private int user_id;
     private int merchant_id;
@@ -8,10 +13,10 @@ public class BeanDiscountCouponRequest {
     private int discountCoupon_request;
     private float discountCoupon_money;
     private  String discountCoupon_isConflict;
-    public static final String[] tableTitles={"商家编号","优惠券金额","已买单数","需要订单数","是否冲突"};
+    public static final String[] tableTitles={"商家名","优惠券金额","已买单数","需要订单数","是否冲突"};
 
     public String getCell(int col){
-        if(col==0) return String.valueOf(this.discountCoupon_id);
+        if(col==0) return getMerchant(this.merchant_id);
         else if(col==1) return String.valueOf(this.discountCoupon_money);
         else if(col==2) return String.valueOf(this.discountCoupon_already);
         else if(col==3) return String.valueOf(this.discountCoupon_request);
@@ -19,6 +24,28 @@ public class BeanDiscountCouponRequest {
         else return "";
     }
 
+    public String getMerchant(int merchantId){
+        Connection conn=null;
+        try {
+            conn= DBUtil2.getConnection();
+            String sql="select merchant_name from tbl_merchant where merchant_id=" + merchantId;
+            java.sql.Statement st=conn.createStatement();
+            java.sql.ResultSet rs = st.executeQuery(sql);
+            if(rs.next())  return rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return "";
+    }
     public float getDiscountCoupon_money() {
         return discountCoupon_money;
     }

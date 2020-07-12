@@ -33,6 +33,7 @@ public class FrmUser extends JFrame implements ActionListener {
     private JMenuItem  menuItem_vipInfo=new JMenuItem("会员信息");
     private JMenuItem  menuItem_discountCoupon=new JMenuItem("查看优惠券");
     private JMenuItem  menuItem_discountCouponRequest=new JMenuItem("查看集单数");
+    private JMenuItem  menuItem_evaluateProduct=new JMenuItem("评价商品");
     private JPanel activityBar = new JPanel();
 
     private JPanel statusBar = new JPanel();
@@ -123,7 +124,7 @@ public class FrmUser extends JFrame implements ActionListener {
         this.dataTableAddress.repaint();
     }
 
-    private void reloadShoppingCartTable(int merchantIdx){
+    private void reloadShoppingCartTable(int merchantIdx){ //载入购物车信息
         if(merchantIdx<0) return;
         curMerchant=allMerchant.get(merchantIdx);
         try {
@@ -141,6 +142,7 @@ public class FrmUser extends JFrame implements ActionListener {
         this.dataTableShoppingCart.validate();
         this.dataTableShoppingCart.repaint();
     }
+
     private void reloadProductTypeTable(int merchantIdx){
         if(merchantIdx<0) return;
         curMerchant=allMerchant.get(merchantIdx);
@@ -205,28 +207,6 @@ public class FrmUser extends JFrame implements ActionListener {
         this.dataTableFullReduction.repaint();
     }
 
-    private void reloadDiscountCoupon(int merchantIdx){
-        if(merchantIdx<0) return;
-        curMerchant=allMerchant.get(merchantIdx);
-        try {
-            discountCoupon=PersonPlanUtil.discountCouponManager.loadDiscountCoupon(curMerchant);
-        } catch (BaseException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        tblDiscountCouponData=new Object[discountCoupon.size()][BeanDiscountCoupon.tableTitles.length];
-        for(int i=0;i<discountCoupon.size();i++){
-            for(int j=0;j<BeanDiscountCoupon.tableTitles.length;j++)
-                tblDiscountCouponData[i][j]=discountCoupon.get(i).getCell(j);
-        }
-
-        tabDiscountCouponModel.setDataVector(tblDiscountCouponData,tblDiscountCouponTitle);
-        this.dataTableDiscountCoupon.validate();
-        this.dataTableDiscountCoupon.repaint();
-    }
-
-
-
     public FrmUser(){
         this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.setTitle("饱了么用户点餐系统");
@@ -244,6 +224,7 @@ public class FrmUser extends JFrame implements ActionListener {
         this.menu_other.add(this.menuItem_vipInfo); this.menuItem_vipInfo.addActionListener(this);
         this.menu_other.add(this.menuItem_discountCoupon); this.menuItem_discountCoupon.addActionListener(this);
         this.menu_other.add(this.menuItem_discountCouponRequest); this.menuItem_discountCouponRequest.addActionListener(this);
+        this.menu_other.add(this.menuItem_evaluateProduct); this.menuItem_evaluateProduct.addActionListener(this);
 
         menubar.add(menu_user);
         menubar.add(menu_address);
@@ -402,12 +383,19 @@ public class FrmUser extends JFrame implements ActionListener {
             FrmConfirm frameConfirm = new FrmConfirm(null,"订单确认",true);
             frameConfirm.setVisible(true);
             FrmUser.this.reloadShoppingCartTable(i);
+            FrmUser.this.reloadMerchantTable();
         }else if(e.getSource()==this.menuItem_vipInfo){
             FrmVIPDetails frameVipInfo=new FrmVIPDetails(this,"会员信息",true);
             frameVipInfo.setVisible(true);
         }else if(e.getSource()==this.menuItem_discountCouponRequest){
             FrmShowDiscountCouponRequest frameShowDiscountCouponRequest=new FrmShowDiscountCouponRequest();
             frameShowDiscountCouponRequest.setVisible(true);
+        }else if(e.getSource()==this.menuItem_order){
+            FrmShowProductOrder frameShowProductOrder=new FrmShowProductOrder();
+            frameShowProductOrder.setVisible(true);
+        }else if(e.getSource()==this.menuItem_evaluateProduct){
+            FrmProductEvaluate frameProductEvaluate=new FrmProductEvaluate();
+            frameProductEvaluate.setVisible(true);
         }
     }
 }
