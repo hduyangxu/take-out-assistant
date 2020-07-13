@@ -72,12 +72,12 @@ public class riderManager implements IRiderManager {
         Connection conn=null;
         try {
             conn=DBUtil2.getConnection();
-            String sql="select * from tbl_rider a,tbl_riderAccount b where a.rider_id = b.rider_id" +
+            String sql="select * from tbl_rider a,tbl_productOrder b where a.rider_id = b.rider_id" +
                     " and a.rider_id = ?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
             pst.setInt(1,rider.getRider_id());
             java.sql.ResultSet rs = pst.executeQuery();
-            if(rs.next()) throw new BusinessException("无法删除，该骑手尚有入帐单");
+            if(rs.next()) throw new BusinessException("无法删除，该骑手有关联的订单");
             sql = "delete from tbl_rider where rider_id = ?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,rider.getRider_id());

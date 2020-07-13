@@ -19,7 +19,12 @@ public class FrmUser extends JFrame implements ActionListener {
     private JMenu menu_user=new JMenu("账号管理");
     private JMenu menu_address=new JMenu("地址管理");
     private JMenu menu_shoppingCart=new JMenu("购物车管理");
+    private JMenu menu_Discount=new JMenu("优惠管理");
     private JMenu menu_other=new JMenu("其他管理");
+
+    private JTextField edtSearchMerchant=new JTextField(20);
+    private JButton btnSearch=new JButton("搜索产品");
+    public static String key;
 
     private JMenuItem  menuItem_modifyUserName=new JMenuItem("修改用户名");
     private JMenuItem  menuItem_modifyPwd=new JMenuItem("修改密码");
@@ -34,6 +39,8 @@ public class FrmUser extends JFrame implements ActionListener {
     private JMenuItem  menuItem_discountCoupon=new JMenuItem("查看优惠券");
     private JMenuItem  menuItem_discountCouponRequest=new JMenuItem("查看集单数");
     private JMenuItem  menuItem_evaluateProduct=new JMenuItem("评价商品");
+    private JMenuItem  menuItem_recommend=new JMenuItem("商品推荐");
+
     private JPanel activityBar = new JPanel();
 
     private JPanel statusBar = new JPanel();
@@ -80,7 +87,6 @@ public class FrmUser extends JFrame implements ActionListener {
     List<BeanProductType> productType=null;
     List<BeanProductDetails> productDetails=null;
     public static List<BeanFullReduction> fullReduction=null;
-    List<BeanDiscountCoupon> discountCoupon=null;
     public static List<BeanAddress> address=null;
     public static List<BeanOrderDetail> orderDetail=null;
 
@@ -220,16 +226,22 @@ public class FrmUser extends JFrame implements ActionListener {
         this.menu_shoppingCart.add(this.menuItem_AddToCart); this.menuItem_AddToCart.addActionListener(this);
         this.menu_shoppingCart.add(this.menuItem_RemoveFromCart); this.menuItem_RemoveFromCart.addActionListener(this);
         this.menu_shoppingCart.add(this.menuItem_confirmOrder); this.menuItem_confirmOrder.addActionListener(this);
+        this.menu_Discount.add(this.menuItem_vipInfo); this.menuItem_vipInfo.addActionListener(this);
+        this.menu_Discount.add(this.menuItem_discountCoupon); this.menuItem_discountCoupon.addActionListener(this);
+        this.menu_Discount.add(this.menuItem_discountCouponRequest); this.menuItem_discountCouponRequest.addActionListener(this);
         this.menu_other.add(this.menuItem_order); this.menuItem_order.addActionListener(this);
-        this.menu_other.add(this.menuItem_vipInfo); this.menuItem_vipInfo.addActionListener(this);
-        this.menu_other.add(this.menuItem_discountCoupon); this.menuItem_discountCoupon.addActionListener(this);
-        this.menu_other.add(this.menuItem_discountCouponRequest); this.menuItem_discountCouponRequest.addActionListener(this);
         this.menu_other.add(this.menuItem_evaluateProduct); this.menuItem_evaluateProduct.addActionListener(this);
+        this.menu_other.add(this.menuItem_recommend); this.menuItem_recommend.addActionListener(this);
 
         menubar.add(menu_user);
         menubar.add(menu_address);
         menubar.add(menu_shoppingCart);
+        menubar.add(menu_Discount);
         menubar.add(menu_other);
+        menubar.add(edtSearchMerchant);
+        this.edtSearchMerchant.addActionListener(this);
+        menubar.add(btnSearch);
+        this.btnSearch.addActionListener(this);
         this.setJMenuBar(menubar);
 
         JScrollPane js1=new JScrollPane(this.dataTableMerchant);
@@ -396,6 +408,13 @@ public class FrmUser extends JFrame implements ActionListener {
         }else if(e.getSource()==this.menuItem_evaluateProduct){
             FrmProductEvaluate frameProductEvaluate=new FrmProductEvaluate();
             frameProductEvaluate.setVisible(true);
+        }else if(e.getSource()==this.btnSearch){
+            key=edtSearchMerchant.getText();
+            FrmShowSearchProduct frameShowSearchProduct = new FrmShowSearchProduct();
+            frameShowSearchProduct.setVisible(true);
+        }else if(e.getSource()==this.menuItem_recommend){
+            FrmRecommend frameRecommend = new FrmRecommend();
+            frameRecommend.setVisible(true);
         }
     }
 }

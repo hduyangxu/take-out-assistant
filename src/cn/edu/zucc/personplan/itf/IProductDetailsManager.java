@@ -10,12 +10,12 @@ import java.util.List;
 
 public interface IProductDetailsManager {
     public void addProduct(BeanProductType productType, String product_name,
-                           float product_price, float product_discountPrice) throws BaseException;
+                           float product_price, float product_discountPrice, int count) throws BaseException;
 
     public void deleteProduct(BeanProductDetails productDetails) throws BaseException;
 
     public void modifyProductDetails(BeanProductDetails productDetails, String product_name,
-                       float product_price, float product_discountPrice) throws BaseException;
+                       float product_price, float product_discountPrice,int count) throws BaseException;
 
     public void evaluateProduct(BeanProductEvaluate productEvaluate,String evaluateContent, int evaluateStarRated) throws  BaseException;
 

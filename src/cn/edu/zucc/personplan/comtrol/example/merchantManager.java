@@ -124,7 +124,7 @@ public class merchantManager implements IMerchantManager{
             conn= DBUtil2.getConnection();
             String sql = "select a.merchant_id, avg(finalPrice), count(*) " +
                     "from tbl_productorder a, tbl_merchant b " +
-                    "where a.merchant_id=b.merchant_id " +
+                    "where a.merchant_id=b.merchant_id and a.order_state='已完成'" +
                     "GROUP BY a.merchant_id";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             java.sql.ResultSet rs=pst.executeQuery();

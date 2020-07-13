@@ -2,12 +2,17 @@ package cn.edu.zucc.personplan.comtrol.example;
 
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.itf.IUserManager;
+import cn.edu.zucc.personplan.model.BeanRider;
+import cn.edu.zucc.personplan.model.BeanSearchProduct;
 import cn.edu.zucc.personplan.model.BeanUser;
+import cn.edu.zucc.personplan.model.BeanUserDetail;
 import cn.edu.zucc.personplan.util.*;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class userManager implements IUserManager {
 
@@ -217,6 +222,127 @@ public class userManager implements IUserManager {
 			}
 			rs.close();
 			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public List<BeanUserDetail> loadUserDetails() throws BaseException{
+		List<BeanUserDetail> result=new ArrayList<BeanUserDetail>();
+		Connection conn = null;
+		try {
+			conn= DBUtil2.getConnection();
+			String sql="select a.user_id,user_name,count(*),sum(b.finalPrice),sum(b.originalPrice-b.finalPrice) " +
+					"from tbl_user a, tbl_productorder b " +
+					"where a.user_id=b.user_id " +
+					"GROUP BY b.user_id";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			java.sql.ResultSet rs=pst.executeQuery();
+			while(rs.next()){
+				BeanUserDetail bud = new BeanUserDetail();
+				bud.setUserId(rs.getInt(1));
+				bud.setUserName(rs.getString(2));
+				bud.setOrderCount(rs.getInt(3));
+				bud.setSumConsumption(rs.getFloat(4));
+				bud.setSumDiscount(rs.getFloat(5));
+				result.add(bud);
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+
+	public List<BeanSearchProduct> loadSearchProduct(String key) throws BaseException{
+		List<BeanSearchProduct> result=new ArrayList<BeanSearchProduct>();
+		Connection conn = null;
+		try {
+			conn= DBUtil2.getConnection();
+			String sql="select * from tbl_productDetails where product_name like '%"+key +"%'";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			java.sql.ResultSet rs=pst.executeQuery();
+			while(rs.next()){
+				BeanSearchProduct bsp = new BeanSearchProduct();
+				bsp.setProduct_id(rs.getInt(1));
+				bsp.setMerchant_id(rs.getInt(2));
+				bsp.setType_id(rs.getInt(3));
+				bsp.setProduct_name(rs.getString(4));
+				bsp.setProduct_price(rs.getFloat(5));
+				bsp.setProduct_discountPrice(rs.getFloat(6));
+				bsp.setProduct_count(rs.getInt(7));
+				result.add(bsp);
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+
+	public List<BeanSearchProduct> loadRecommend() throws BaseException{
+		List<BeanSearchProduct> result=new ArrayList<BeanSearchProduct>();
+		Connection conn = null;
+		try {
+			conn= DBUtil2.getConnection();
+			String sql="select a.product_id,sum(a.product_quantity)from tbl_orderdetail a ,tbl_productorder b " +
+					"where b.order_state = '已完成' and a.order_id=b.order_id and a.user_id = ? " +
+					"GROUP BY a.product_id " +
+					"ORDER BY sum(a.product_quantity) DESC " +
+					"Limit 5";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setInt(1,BeanUser.currentLoginUser.getUser_id());
+			java.sql.ResultSet rs=pst.executeQuery();
+			List<Integer> tempProductId = new ArrayList<>();
+			while(rs.next()){
+				tempProductId.add(rs.getInt(1));
+				}
+			for(int i=0; i<tempProductId.size();i++){
+				sql="select * from tbl_productDetails where product_id = ?";
+				pst=conn.prepareStatement(sql);
+				pst.setInt(1,tempProductId.get(i));
+				rs=pst.executeQuery();
+				while(rs.next()){
+					BeanSearchProduct bsp = new BeanSearchProduct();
+					bsp.setProduct_id(rs.getInt(1));
+					bsp.setMerchant_id(rs.getInt(2));
+					bsp.setType_id(rs.getInt(3));
+					bsp.setProduct_name(rs.getString(4));
+					bsp.setProduct_price(rs.getFloat(5));
+					bsp.setProduct_discountPrice(rs.getFloat(6));
+					bsp.setProduct_count(rs.getInt(7));
+					result.add(bsp);
+					System.out.println(tempProductId.get(i));
+				}
+			}
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DbException(e);

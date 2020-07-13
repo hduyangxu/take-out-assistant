@@ -1,9 +1,12 @@
 package cn.edu.zucc.personplan.itf;
 
+import cn.edu.zucc.personplan.model.BeanSearchProduct;
 import cn.edu.zucc.personplan.model.BeanUser;
+import cn.edu.zucc.personplan.model.BeanUserDetail;
 import cn.edu.zucc.personplan.util.BaseException;
 
 import java.sql.Date;
+import java.util.List;
 
 public interface IUserManager {
     //用户注册
@@ -24,4 +27,13 @@ public interface IUserManager {
 
 	//vip管理
 	public void vipManager()throws BaseException;
+
+	//显示用户汇总信息
+	public List<BeanUserDetail> loadUserDetails() throws BaseException;
+
+	//显示用户查询信息
+	public List<BeanSearchProduct> loadSearchProduct(String key) throws BaseException;
+
+	//
+	public List<BeanSearchProduct> loadRecommend() throws BaseException;
 }

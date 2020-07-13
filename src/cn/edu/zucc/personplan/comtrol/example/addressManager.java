@@ -53,8 +53,14 @@ public class addressManager implements IAddressManager {
         Connection conn = null;
         try {
             conn = DBUtil2.getConnection();
-            String sql = "delete from tbl_address where address_id = " + address.getAddress_id();
+            String sql ="select * from tbl_address a,tbl_productorder b " +
+                    "where a.address_id=b.address_id " +
+                    "and a.address_id=" + address.getAddress_id();
             java.sql.Statement st = conn.createStatement();
+            java.sql.ResultSet rs = st.executeQuery(sql);
+            if(rs.next()) throw new BusinessException("无法删除，该地址信息已存在于记录中");
+            sql = "delete from tbl_address where address_id = " + address.getAddress_id();
+            st = conn.createStatement();
             st.execute(sql);
             st.close();
         } catch (SQLException e) {
@@ -72,13 +78,19 @@ public class addressManager implements IAddressManager {
     }
 
     public void modifyAddress(BeanAddress address, String province, String city, String zone, String detail, String people, String tel) throws BaseException {
-        if (detail == null || "".equals(detail)) throw new BusinessException("详细地址不能为空");
-        if (people == null || "".equals(people)) throw new BusinessException("联系人不能为空");
-        if (tel == null || "".equals(tel)) throw new BusinessException("联系电话不能为空");
         Connection conn = null;
         try {
             conn = DBUtil2.getConnection();
-            String sql = "update tbl_address set address_province=?,address_city=?," +
+            String sql ="select * from tbl_address a,tbl_productorder b " +
+                    "where a.address_id=b.address_id " +
+                    "and a.address_id=" + address.getAddress_id();
+            java.sql.Statement st = conn.createStatement();
+            java.sql.ResultSet rs = st.executeQuery(sql);
+            if(rs.next()) throw new BusinessException("无法修改，该地址信息已存在于记录中");
+            if (detail == null || "".equals(detail)) throw new BusinessException("详细地址不能为空");
+            if (people == null || "".equals(people)) throw new BusinessException("联系人不能为空");
+            if (tel == null || "".equals(tel)) throw new BusinessException("联系电话不能为空");
+            sql = "update tbl_address set address_province=?,address_city=?," +
                     "address_zone=?,address_detail=?,address_people=?,address_tel=? where address_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, province);

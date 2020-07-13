@@ -51,6 +51,8 @@ public class FrmFinalConfirm extends JDialog implements ActionListener {
                     "where a.discountCoupon_id=b.discountCoupon_id " +
                     "and b.merchant_id = ? " +
                     "and b.discountCoupon_isConflict=? "+
+                    "and discountCoupon_endDate > now() " +
+                    "and discountCoupon_startDate < NOW() " +
                     "and user_id = ? group by a.discountCoupon_money";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
@@ -87,9 +89,12 @@ public class FrmFinalConfirm extends JDialog implements ActionListener {
                     "from tbl_userDiscountCoupon a,tbl_discountcoupon b " +
                     "where a.discountCoupon_id=b.discountCoupon_id " +
                     "and b.merchant_id = ? " +
-                    "and user_id = ? group by a.discountCoupon_money";
+                    "and user_id = ? " +
+                    "and discountCoupon_endDate > now() " +
+                    "and discountCoupon_startDate < NOW() " +
+                    "group by a.discountCoupon_money";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1,merchant.getMerchant_id());
+            pst.setInt(1, merchant.getMerchant_id());
             pst.setInt(2, BeanUser.currentLoginUser.getUser_id());
             java.sql.ResultSet rs= pst.executeQuery();
             edtDiscountCoupon.addItem("---下拉选择---");

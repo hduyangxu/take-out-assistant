@@ -18,10 +18,23 @@ public class shoppingCartManager implements IShoppingCartManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            int nowOrderId = 1;
-            String sql="select max(order_id) from tbl_productOrder";
+            String sql="select product_count from tbl_productDetails where product_id=?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,productDetails.getProduct_id());
             java.sql.ResultSet rs=pst.executeQuery();
+            rs.next();
+            if(rs.getInt(1)<count)
+                throw new BusinessException("库存不足！");
+            sql="update tbl_productDetails set product_count = product_count-? where product_id = ?";
+            pst=conn.prepareStatement(sql);
+            pst.setInt(1,count);
+            pst.setInt(2,productDetails.getProduct_id());
+            pst.execute();
+
+            int nowOrderId = 1;
+            sql="select max(order_id) from tbl_productOrder";
+            pst=conn.prepareStatement(sql);
+            rs=pst.executeQuery();
             if(rs.next()) nowOrderId=rs.getInt(1)+1;
             sql="select * from tbl_orderdetail where product_id=? and order_id=? and user_id = ?";
             pst=conn.prepareStatement(sql);
@@ -74,8 +87,22 @@ public class shoppingCartManager implements IShoppingCartManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="delete from tbl_orderDetail where product_id = ? and order_id = ? and user_id=?";
+            String sql="select product_id,product_quantity from tbl_orderdetail " +
+                    "where order_id=? and product_id=? and user_id=?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,orderDetail.getOrder_id());
+            pst.setInt(2,orderDetail.getProduct_id());
+            pst.setInt(3,orderDetail.getUser_id());
+            java.sql.ResultSet rs=pst.executeQuery();
+            rs.next();
+            sql="update tbl_productDetails set product_count = product_count + ? where product_id = ?";
+            pst=conn.prepareStatement(sql);
+            pst.setInt(1,rs.getInt(2));
+            pst.setInt(2,rs.getInt(1));
+            pst.execute();
+
+            sql="delete from tbl_orderDetail where product_id = ? and order_id = ? and user_id=?";
+            pst=conn.prepareStatement(sql);
             pst.setInt(1,orderDetail.getProduct_id());
             pst.setInt(2,orderDetail.getOrder_id());
             pst.setInt(3,BeanUser.currentLoginUser.getUser_id());
@@ -118,6 +145,7 @@ public class shoppingCartManager implements IShoppingCartManager {
               bod.setProduct_quantity(rs.getInt(5));
               bod.setProduct_sumPrice(rs.getFloat(6));
               bod.setProduct_discountPrice(rs.getFloat(7));
+              bod.setUser_id(rs.getInt(8));
               result.add(bod);
             }
             return result;

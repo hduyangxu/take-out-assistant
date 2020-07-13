@@ -39,6 +39,7 @@ public class FrmSys extends JFrame implements ActionListener {
     private JMenuItem  menuItem_modifyDiscountCoupon=new JMenuItem("修改优惠券");
     private JMenuItem  menuItem_rider=new JMenuItem("骑手管理");
     private JMenuItem  menuItem_order=new JMenuItem("订单管理");
+    private JMenuItem  menuItem_user=new JMenuItem("用户信息");
 
     private JPanel activityBar = new JPanel();
 
@@ -201,6 +202,7 @@ public class FrmSys extends JFrame implements ActionListener {
         this.menu_discountCoupon.add(this.menuItem_modifyDiscountCoupon); this.menuItem_modifyDiscountCoupon.addActionListener(this);
         this.menu_other.add(menuItem_rider); this.menuItem_rider.addActionListener(this);
         this.menu_other.add(menuItem_order); this.menuItem_order.addActionListener(this);
+        this.menu_other.add(menuItem_user); this.menuItem_user.addActionListener(this);
 
         menubar.add(menu_merchant);
         menubar.add(menu_productType);
@@ -395,7 +397,7 @@ public class FrmSys extends JFrame implements ActionListener {
                 if (j < 0) {
                     return;
                 }
-                FrmSys.this.reloadProductTypeTable(j);
+                FrmSys.this.reloadProductDetailsTable(j);
                 reloadMerchantTable();
         } else if (e.getSource() == this.menuItem_addFullReduction) {
             if (this.curMerchant == null) {
@@ -475,6 +477,9 @@ public class FrmSys extends JFrame implements ActionListener {
         }else if(e.getSource()==this.menuItem_order){
             FrmSysOrder frameOrder = new FrmSysOrder();
             frameOrder.setVisible(true);
+        }else if(e.getSource()==this.menuItem_user){
+            FrmShowUser frameShowUser = new FrmShowUser();
+            frameShowUser.setVisible(true);
         }
     }
 }

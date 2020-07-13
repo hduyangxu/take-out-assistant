@@ -82,8 +82,9 @@ public class riderAccountManager implements IRiderAccountManager {
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select * from tbl_riderAccount group by account_id";
+            String sql = "select * from tbl_riderAccount where rider_id = ? group by account_id";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,rider.getRider_id());
             java.sql.ResultSet rs= pst.executeQuery();
             while(rs.next()){
                 BeanRiderAccount bra=new BeanRiderAccount();

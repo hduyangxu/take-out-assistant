@@ -57,7 +57,7 @@ public class FrmEvaluate extends JDialog implements ActionListener {
             }
             try {
                 PersonPlanUtil.riderAccountManager.evaluateRider(productOrder, evaluate);
-                JOptionPane.showMessageDialog(null, "修改成功", "成功",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "评价成功", "成功",JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
                 PersonPlanUtil.orderManager.confirmArrive(productOrder);
             } catch (BaseException e1) {

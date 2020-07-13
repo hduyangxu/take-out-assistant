@@ -17,19 +17,20 @@ public class productDetailsManager implements IProductDetailsManager {
 
     @Override
     public void addProduct(BeanProductType productType, String product_name,
-                           float product_price, float product_discountPrice) throws BaseException{
+                           float product_price, float product_discountPrice,int count) throws BaseException{
         if(product_name==null||"".equals(product_name)) throw new BusinessException("商品名称不能为空");
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
             String sql="insert into tbl_productDetails (merchant_id,type_id,product_name, " +
-                    "product_price,product_discountPrice) values (?,?,?,?,?)";
+                    "product_price,product_discountPrice,product_count) values (?,?,?,?,?,?)";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
             pst.setInt(1,productType.getMerchant_id());
             pst.setInt(2,productType.getType_id());
             pst.setString(3,product_name);
             pst.setFloat(4,product_price);
             pst.setFloat(5,product_discountPrice);
+            pst.setInt(6,count);
             pst.execute();
             sql="update tbl_productType set type_quantity=type_quantity+1 where type_id = ?";
             pst=conn.prepareStatement(sql);
@@ -56,11 +57,18 @@ public class productDetailsManager implements IProductDetailsManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="delete from tbl_productDetails where product_id = "+productDetails.getProduct_id();
+            String sql="select * from tbl_productdetails a,tbl_orderdetail b " +
+                    "where a.product_id=b.product_id " +
+                    "and a.product_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,productDetails.getProduct_id());
+            java.sql.ResultSet rs = pst.executeQuery();
+            if(rs.next()) throw new BusinessException("该产品已存在于订单中，无法删除");
+            sql="delete from tbl_productDetails where product_id = "+productDetails.getProduct_id();
             java.sql.Statement st = conn.createStatement();
             st.execute(sql);
             sql="update tbl_productType set type_quantity=type_quantity-1 where type_id = ?";
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst = conn.prepareStatement(sql);
             pst=conn.prepareStatement(sql);
             pst.setInt(1,productDetails.getType_id());
             pst.execute();
@@ -82,13 +90,20 @@ public class productDetailsManager implements IProductDetailsManager {
 
     @Override
     public void modifyProductDetails(BeanProductDetails productDetails, String product_name,
-                                     float product_price, float product_discountPrice) throws BaseException{
-        if(product_name==null||"".equals(product_name)) throw new BusinessException("商品名称不能为空");
+                                     float product_price, float product_discountPrice,int count) throws BaseException{
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="update tbl_productDetails set product_name = ? where product_id = ?";
-            java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            String sql="select * from tbl_productdetails a,tbl_orderdetail b " +
+                    "where a.product_id=b.product_id " +
+                    "and a.product_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,productDetails.getProduct_id());
+            java.sql.ResultSet rs = pst.executeQuery();
+            if(rs.next()) throw new BusinessException("该产品已存在于订单中，无法修改");
+
+            sql="update tbl_productDetails set product_name = ? where product_id = ?";
+            pst=conn.prepareStatement(sql);
             pst.setString(1,product_name);
             pst.setInt(2,productDetails.getProduct_id());
             pst.execute();
@@ -138,6 +153,7 @@ public class productDetailsManager implements IProductDetailsManager {
                 bpd.setProduct_name(rs.getString(4));
                 bpd.setProduct_price(rs.getFloat(5));
                 bpd.setProduct_discountPrice(rs.getFloat(6));
+                bpd.setProduct_count(rs.getInt(7));
                 result.add(bpd);
             }
             return result;

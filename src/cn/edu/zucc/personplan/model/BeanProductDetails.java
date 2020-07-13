@@ -7,13 +7,24 @@ public class BeanProductDetails {
     private String product_name;
     private float product_price;
     private float product_discountPrice;
-    public static final String[] tableTitles={"产品名","产品价格","优惠价格"};
+    private int product_count;
+    public static final String[] tableTitles={"产品名","产品价格","优惠价格","库存"};
 
     public String getCell(int col){
         if(col==0) return this.product_name;
         else if(col==1) return String.valueOf(this.product_price);
         else if(col==2) return String.valueOf(this.product_discountPrice);
+        else if(col==3) return String.valueOf(this.product_count);
         else return "";
+    }
+
+
+    public int getProduct_count() {
+        return product_count;
+    }
+
+    public void setProduct_count(int product_count) {
+        this.product_count = product_count;
     }
 
     public int getProduct_id() {

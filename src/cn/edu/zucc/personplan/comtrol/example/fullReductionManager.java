@@ -46,8 +46,15 @@ public class fullReductionManager implements IFullReductionManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="update tbl_fullReduction set fullReduction_request = ?,fullReduction_money = ? where fullReduction_id = ?";
+            String sql="select * from tbl_productorder a,tbl_fullreduction b " +
+                    "where a.fullReduction_id=b.fullReduction_id " +
+                    "and a.fullReduction_id=?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,fullReduction.getFullReduction_id());
+            java.sql.ResultSet rs=pst.executeQuery();
+            if(rs.next()) throw new BusinessException("订单中已存在该满减方案,无法修改");
+            sql="update tbl_fullReduction set fullReduction_request = ?,fullReduction_money = ? where fullReduction_id = ?";
+            pst=conn.prepareStatement(sql);
             pst.setFloat(1,fullReduction_request);
             pst.setFloat(2,fullReduction_money);
             pst.setInt(3,fullReduction.getFullReduction_id());
@@ -72,10 +79,18 @@ public class fullReductionManager implements IFullReductionManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="delete from tbl_fullReduction where fullReduction_id = "+fullReduction.getFullReduction_id();
-            java.sql.Statement st = conn.createStatement();
-            st.execute(sql);
-            st.close();
+            String sql="select * from tbl_productorder a,tbl_fullreduction b " +
+                    "where a.fullReduction_id=b.fullReduction_id " +
+                    "and a.fullReduction_id=?";
+            java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,fullReduction.getFullReduction_id());
+            java.sql.ResultSet rs=pst.executeQuery();
+            if(rs.next()) throw new BusinessException("订单中已存在该满减方案,无法删除");
+            sql="delete from tbl_fullReduction where fullReduction_id = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1,fullReduction.getFullReduction_id());
+            pst.execute();
+            pst.close();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DbException(e);

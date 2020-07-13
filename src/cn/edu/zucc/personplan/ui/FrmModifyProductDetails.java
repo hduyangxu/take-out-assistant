@@ -4,6 +4,7 @@ import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanProductDetails;
 import cn.edu.zucc.personplan.model.BeanProductType;
 import cn.edu.zucc.personplan.util.BaseException;
+import cn.edu.zucc.personplan.util.BusinessException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +20,11 @@ public class FrmModifyProductDetails extends JDialog implements ActionListener {
     private JLabel labelName = new JLabel("名称：");
     private JLabel labelPrice = new JLabel("价格：");
     private JLabel labelDiscountPrice = new JLabel("优惠价：");
+    private JLabel labelCount = new JLabel("数量:");
     private JTextField edtName = new JTextField(20);
     private JTextField edtPrice = new JTextField(20);
     private JTextField edtDiscountPrice = new JTextField(20);
+    private JTextField edtCount = new JTextField(20);
 
     public FrmModifyProductDetails(JFrame f, String s, boolean b) {
         super(f, s, b);
@@ -37,9 +40,11 @@ public class FrmModifyProductDetails extends JDialog implements ActionListener {
         workPane.add(edtPrice);
         workPane.add(labelDiscountPrice);
         workPane.add(edtDiscountPrice);
+        workPane.add(labelCount);
+        workPane.add(edtCount);
         this.getContentPane().add(workPane, BorderLayout.CENTER);
 
-        this.setSize(250, 250);
+        this.setSize(250, 270);
         // 屏幕居中显示
         double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -60,8 +65,11 @@ public class FrmModifyProductDetails extends JDialog implements ActionListener {
             String name=this.edtName.getText();
             float price= Float.parseFloat(this.edtPrice.getText());
             float discountPrice= Float.parseFloat(this.edtDiscountPrice.getText());
+            int count = Integer.parseInt(this.edtCount.getText());
             try {
-                PersonPlanUtil.productDetailsManager.modifyProductDetails(productDetails, name, price, discountPrice);
+                if(name==null||"".equals(name)) throw new BusinessException("商品名称不能为空");
+                if("".equals(price)||"".equals(discountPrice)) throw new BusinessException("请输入价格！");
+                PersonPlanUtil.productDetailsManager.modifyProductDetails(productDetails, name, price, discountPrice,count);
                 JOptionPane.showMessageDialog(null, "修改成功", "成功", JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
             } catch (BaseException e1) {

@@ -6,6 +6,7 @@ import cn.edu.zucc.personplan.model.BeanDiscountCoupon;
 import cn.edu.zucc.personplan.model.BeanFullReduction;
 import cn.edu.zucc.personplan.model.BeanMerchant;
 import cn.edu.zucc.personplan.util.BaseException;
+import cn.edu.zucc.personplan.util.BusinessException;
 import cn.edu.zucc.personplan.util.DBUtil2;
 import cn.edu.zucc.personplan.util.DbException;
 
@@ -53,9 +54,19 @@ public class discountCouponManager implements IDiscountCouponManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="update tbl_discountCoupon set discountCoupon_money = ?,discountCoupon_startDate = ?" +
-                    ",discountCoupon_endDate = ?,discountCoupon_request = ?,discountCoupon_isConflict = ? where discountCoupon_id = ?";
+            String sql="select * from tbl_discountcoupon " +
+                    "where discountCoupon_id in(" +
+                    "SELECT discountCoupon_id FROM tbl_discountcouponrequest " +
+                    "UNION SELECT discountCoupon_id FROM tbl_userdiscountcoupon " +
+                    "UNION SELECT discountCoupon_id FROM tbl_productorder) " +
+                    "and discountCoupon_id=?";
             java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,discountCoupon.getDiscountCoupon_id());
+            java.sql.ResultSet rs = pst.executeQuery();
+            if(rs.next()) throw new BusinessException("无法修改，订单中已有该优惠券");
+            sql="update tbl_discountCoupon set discountCoupon_money = ?,discountCoupon_startDate = ?" +
+                    ",discountCoupon_endDate = ?,discountCoupon_request = ?,discountCoupon_isConflict = ? where discountCoupon_id = ?";
+            pst=conn.prepareStatement(sql);
             pst.setFloat(1,money);
             pst.setTimestamp(2,new java.sql.Timestamp(startDate.getTime()));
             pst.setTimestamp(3,new java.sql.Timestamp(endDate.getTime()));
@@ -83,7 +94,17 @@ public class discountCouponManager implements IDiscountCouponManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="delete from tbl_discountCoupon where discountCoupon_id = "+discountCoupon.getDiscountCoupon_id();
+            String sql="select * from tbl_discountcoupon " +
+                    "where discountCoupon_id in(" +
+                    "SELECT discountCoupon_id FROM tbl_discountcouponrequest " +
+                    "UNION SELECT discountCoupon_id FROM tbl_userdiscountcoupon " +
+                    "UNION SELECT discountCoupon_id FROM tbl_productorder) " +
+                    "and discountCoupon_id=?";
+            java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+            pst.setInt(1,discountCoupon.getDiscountCoupon_id());
+            java.sql.ResultSet rs = pst.executeQuery();
+            if(rs.next()) throw new BusinessException("无法删除，已有该优惠券记录");
+            sql="delete from tbl_discountCoupon where discountCoupon_id = "+discountCoupon.getDiscountCoupon_id();
             java.sql.Statement st = conn.createStatement();
             st.execute(sql);
             st.close();
@@ -107,7 +128,7 @@ public class discountCouponManager implements IDiscountCouponManager {
         Connection conn = null;
         try {
             conn= DBUtil2.getConnection();
-            String sql = "select * from tbl_discountCoupon where merchant_id=? group by discountCoupon_money";
+            String sql = "select * from tbl_discountCoupon where merchant_id=? group by discountCoupon_id";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, beanMerchant.getMerchant_id());
             java.sql.ResultSet rs= pst.executeQuery();

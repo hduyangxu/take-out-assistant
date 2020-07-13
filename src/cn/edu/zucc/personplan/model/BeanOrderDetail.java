@@ -8,6 +8,7 @@ public class BeanOrderDetail {
     private float product_sumPrice;
     private float product_discountPrice;
     private String product_name;
+    private int user_id;
 
     public static final String[] tableTitles={"产品名称","购买数量","总价","优惠价格"};
     public String getCell(int col){
@@ -16,6 +17,14 @@ public class BeanOrderDetail {
         else if(col==2) return String.valueOf(this.product_sumPrice);
         else if(col==3) return String.valueOf(this.product_discountPrice);
         else return "";
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public String getProduct_name() {
