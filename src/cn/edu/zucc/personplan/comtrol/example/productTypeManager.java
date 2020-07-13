@@ -46,7 +46,7 @@ public class productTypeManager implements IProductTypeManager {
         Connection conn=null;
         try {
             conn= DBUtil2.getConnection();
-            String sql="select * from tbl_productType a, tbl_productDetails b where a.type_id = b.type_id";
+            String sql="select * from tbl_productType a, tbl_productDetails b where a.type_id = b.type_id and a.type_id = "+productType.getType_id();
             java.sql.Statement st = conn.createStatement();
             java.sql.ResultSet rs = st.executeQuery(sql);
             if(rs.next()) throw new BusinessException("无法删除，该类别下尚有商品");

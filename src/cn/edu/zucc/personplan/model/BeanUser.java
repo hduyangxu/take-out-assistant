@@ -3,6 +3,7 @@ package cn.edu.zucc.personplan.model;
 import java.util.Date;
 
 public class BeanUser {
+
 	private int user_id;
 	private String user_name;
 	private int user_sex;

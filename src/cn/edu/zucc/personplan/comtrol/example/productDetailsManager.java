@@ -116,6 +116,10 @@ public class productDetailsManager implements IProductDetailsManager {
             pst=conn.prepareStatement(sql);
             pst.setFloat(1,product_discountPrice);
             pst.setInt(2,productDetails.getProduct_id());
+            sql="update tbl_productDetails set product_count = ? where product_id = ?";
+            pst=conn.prepareStatement(sql);
+            pst.setFloat(1,count);
+            pst.setInt(2,productDetails.getProduct_id());
             pst.execute();
             pst.close();
         } catch (SQLException e) {

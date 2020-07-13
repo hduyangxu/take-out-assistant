@@ -66,9 +66,10 @@ public class orderManager implements IOrderManager {
             //商家优惠券表中有,集单送券表中没有,插入集单送券表
             sql="select discountCoupon_id, discountCoupon_request,discountCoupon_money,discountCoupon_isConflict from tbl_discountcoupon " +
                     "where merchant_id = ? and discountCoupon_id not in" +
-                    "(select discountCoupon_id from tbl_discountcouponrequest)";
+                    "(select discountCoupon_id from tbl_discountcouponrequest where user_id = ?)";
             pst=conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
+            pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
             rs=pst.executeQuery();
             while(rs.next()){
                 sql="INSERT into tbl_discountcouponrequest values(?,?,?,0,?,?,?)";
@@ -83,26 +84,33 @@ public class orderManager implements IOrderManager {
             }
             //集单送券表中已有，已有数量+1 == 要求数：删除集单中的对应数据，用户拥有优惠券+1
             sql="select discountCoupon_id FROM tbl_discountcouponrequest where discountCoupon_already+1 = discountCoupon_request " +
-                    "and discountCoupon_id in(SELECT discountCoupon_id from tbl_userdiscountcoupon) " +
-                    "and merchant_id=?";
+                    "and discountCoupon_id in(SELECT discountCoupon_id from tbl_userdiscountcoupon where user_id = ?) " +
+                    "and merchant_id=? " +
+                    "and user_id = ?";
             pst=conn.prepareStatement(sql);
-            pst.setInt(1,merchant.getMerchant_id());
+            pst.setInt(1,BeanUser.currentLoginUser.getUser_id());
+            pst.setInt(2,merchant.getMerchant_id());
+            pst.setInt(3,BeanUser.currentLoginUser.getUser_id());
             rs=pst.executeQuery();
             while(rs.next()){
-                sql="update tbl_userdiscountcoupon set discountCoupon_count = discountCoupon_count + 1 where discountCoupon_id=?";
+                sql="update tbl_userdiscountcoupon set discountCoupon_count = discountCoupon_count + 1 where discountCoupon_id=? and user_id = ?";
                 pst=conn.prepareStatement(sql);
                 pst.setInt(1,rs.getInt(1));
+                pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
                 pst.execute();
-                sql="delete from tbl_discountcouponrequest where discountCoupon_id=?";
+                sql="delete from tbl_discountcouponrequest where discountCoupon_id=? and user_id = ?";
                 pst=conn.prepareStatement(sql);
                 pst.setInt(1,rs.getInt(1));
+                pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
                 pst.execute();
             }
             sql="select discountCoupon_id,discountCoupon_money,discountCoupon_isConflict FROM tbl_discountcouponrequest where discountCoupon_already+1 = discountCoupon_request " +
-                    "and discountCoupon_id not in(SELECT discountCoupon_id from tbl_userdiscountcoupon) " +
-                    "and merchant_id=?";
+                    "and discountCoupon_id not in(SELECT discountCoupon_id from tbl_userdiscountcoupon where user_id = ?) " +
+                    "and merchant_id=? and user_id = ?";
             pst=conn.prepareStatement(sql);
-            pst.setInt(1,merchant.getMerchant_id());
+            pst.setInt(1,BeanUser.currentLoginUser.getUser_id());
+            pst.setInt(2,merchant.getMerchant_id());
+            pst.setInt(3,BeanUser.currentLoginUser.getUser_id());
             rs=pst.executeQuery();
             while(rs.next()){
                 sql="INSERT into tbl_userdiscountcoupon VALUES(?,?,1,?,?,?)";
@@ -113,25 +121,27 @@ public class orderManager implements IOrderManager {
                 pst.setFloat(4,rs.getFloat(2));
                 pst.setString(5,rs.getString(3));
                 pst.execute();
-                sql="delete from tbl_discountcouponrequest where discountCoupon_id=?";
+                sql="delete from tbl_discountcouponrequest where discountCoupon_id=? and user_id = ?";
                 pst=conn.prepareStatement(sql);
                 pst.setInt(1,rs.getInt(1));
+                pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
                 pst.execute();
             }
             //集单送券表中已有，已有数量+1 != 要求数,已有数量+1
             sql="SELECT discountCoupon_id FROM tbl_discountcouponrequest " +
                     "WHERE discountCoupon_already + 1 <> discountCoupon_request " +
-                    "and merchant_id=?";
+                    "and merchant_id=? and user_id = ?";
             pst=conn.prepareStatement(sql);
             pst.setInt(1,merchant.getMerchant_id());
+            pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
             rs=pst.executeQuery();
             while(rs.next()){
-                sql="update tbl_discountcouponrequest set discountCoupon_already = discountCoupon_already + 1 where discountCoupon_id = ?";
+                sql="update tbl_discountcouponrequest set discountCoupon_already = discountCoupon_already + 1 where discountCoupon_id = ? and user_id = ?";
                 pst=conn.prepareStatement(sql);
                 pst.setInt(1,rs.getInt(1));
+                pst.setInt(2,BeanUser.currentLoginUser.getUser_id());
                 pst.execute();
             }
-
             pst.close();
         } catch (SQLException e) {
             e.printStackTrace();
